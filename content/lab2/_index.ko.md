@@ -30,7 +30,7 @@ pre: "<b>2. </b>"
     ```ssh -i key_file.pem ec2-user@PUBLIC_DNS```
 
 2. Lab 1에서 우리는 S3 버킷 권한을 부여했습니다. 이 권한이 있으므로 아래 명령어를 통해 버킷을 생성합니다. 버킷은 분석용 데이터를 저장할 버킷입니다. 
-*id-* 부분은 알맞게 수정합니다.
+*id-* 부분은 본인의 account id로 수정합니다.
 
     ```aws s3 mb s3://id-emr-lab-data-20200306```
 
@@ -45,8 +45,15 @@ pre: "<b>2. </b>"
     데이터는 order와 customer, product등의 데이터가 잘 연결되어 있어서 이번 실습에서 사용하기 적합합니다.
 
 2. 파일 다운로드가 완료되면 압축을 풀고 이전에 생성한 S3의 버킷에 업로드합니다.
+실습에서는 order, order_info, product, customer 데이터만 사용할 것입니다.
+또한 Hive는 directory 단위로 데이터를 읽습니다. 따라서 각 directory의 역할을 할 수 있도록 prefix를 추가합니다.
 
-    ```aws s3 cp brazilian-ecommerce/ s3://id-emr-lab-data-20200306/brazilian-ecommerce --recursive```
+    ```
+    aws s3 cp brazilian-ecommerce/olist_customers_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer/
+    aws s3 cp brazilian-ecommerce/olist_products_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/product/
+    aws s3 cp brazilian-ecommerce/olist_order_items_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/order/
+    aws s3 cp brazilian-ecommerce/olist_orders_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/
+    ```
 
     실습에서 사용한 데이터가 준비되었습니다.
 
@@ -117,30 +124,6 @@ EC2 인스턴스에 연결하는 것과 동일합니다. EMR_PUBLIC_DNS는 EMR �
 
 Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
-S3에 저장된 데이터를 Hive에서 다루기 위해서는 여러가지 방법이 있습니다.
-
-여기서는 Hadoop Data File System인 HDFS에 데이터를 저장하고 이 데이터를 Hive로 가져오는 방법을 실습합니다.
-
-* EMR 마스터 노드에 연결된 상태에서 S3에 저장되어 있는 데이터를 HDFS로 가지고 옵니다.
-
-```
-    aws s3 cp s3://id-emr-lab-data-20200306/brazilian-ecommerce ~/brazilian-ecommerce --recursive
-    
-    hadoop fs -mkdir /brazilian-ecommerce
-    hadoop fs -copyFromLocal ~/brazilian-ecommerce/* /brazilian-ecommerce
-    hadoop fs -ls /brazilian-ecommerce
-    
-    # Hive는 Directory 단위로 데이터를 로딩하므로 파일을 디렉토리별로 나눠줍니다.
-    hadoop fs -mkdir /brazilian-ecommerce/orders
-    hadoop fs -mv /brazilian-ecommerce/olist_order_items_dataset.csv /brazilian-ecommerce/orders/
-    
-    hadoop fs -mkdir /brazilian-ecommerce/product
-    hadoop fs -mv /brazilian-ecommerce/olist_products_dataset.csv /brazilian-ecommerce/product/
-    
-    hadoop fs -mkdir /brazilian-ecommerce/order_info
-    hadoop fs -mv /brazilian-ecommerce/olist_orders_dataset.csv /brazilian-ecommerce/order_info/
-```
-
 * `hive`를 입력하여 Hive를 실행합니다.
 
     ![img](./images/lab2_pic8.png)
@@ -160,7 +143,7 @@ S3에 저장된 데이터를 Hive에서 다루기 위해서는 여러가지 방�
     )
     ROW FORMAT DELIMITED
     FIELDS TERMINATED BY ','
-    LOCATION 'hdfs:/brazilian-ecommerce/orders/';
+    LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order/';
     
     CREATE EXTERNAL TABLE IF NOT EXISTS product (
       product_id                  STRING,
@@ -175,7 +158,7 @@ S3에 저장된 데이터를 Hive에서 다루기 위해서는 여러가지 방�
     )
     ROW FORMAT DELIMITED
     FIELDS TERMINATED BY ','
-    location 'hdfs:/brazilian-ecommerce/product/';
+    location 's3://id-emr-lab-data-20200306/brazilian-ecommerce/product/';
     
     CREATE EXTERNAL TABLE IF NOT EXISTS order_info (
       order_id                       STRING,
@@ -189,7 +172,7 @@ S3에 저장된 데이터를 Hive에서 다루기 위해서는 여러가지 방�
     )
     ROW FORMAT DELIMITED
     FIELDS TERMINATED BY ','
-    LOCATION 'hdfs:/brazilian-ecommerce/order_info/';
+    LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/';
 ```
 
 * Product Category별 구매 금액 Sum, Avg을 구하고 저장하는 쿼리를 작성합니다.
@@ -234,7 +217,7 @@ S3에 저장된 데이터를 Hive에서 다루기 위해서는 여러가지 방�
 
 * EMR 마스터 노드에 연결된 상태에서 `pyspark`를 입력하여 PySpark를 실행합니다.
 
-   ![img](./images/lab2_pic9.png)
+  ![img](./images/lab2_pic9.png)
 ---
 
 * PySpark는 프로그래밍이 가능하여 제한적인 SQL보다 더 다양하고 복잡한 작업을 가능하게 합니다. 여기서는 Kinesis에서 저장한 log의 의미있는 부분만 추출하여 저장합니다. 
@@ -255,13 +238,13 @@ S3에 저장된 데이터를 Hive에서 다루기 위해서는 여러가지 방�
     
     splitter = pyspark.sql.functions.split(log_raw['response_code'], ' ')
     log_raw = log_raw.withColumn('status', splitter.getItem(1))
-    log_raw = log_raw.drop('_c0')
+    log = log_raw.drop('_c0')
     
-    log_raw.show(20, False)
+    log.show(20, False)
     
     # status가 200인 개수와 200이 아닌 경우의 개수를 세어봅니다.
-    log_raw.filter(log_raw.status == 200).count()
-    log_raw.filter(log_raw.status != 200).count()
+    log.filter(log_raw.status == 200).count()
+    log.filter(log_raw.status != 200).count()
     
     # 테이블로 정제한 데이터를 저장합니다.
     # 테이블로 정제한 데이터를 S3에 저장합니다.

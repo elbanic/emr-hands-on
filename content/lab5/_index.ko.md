@@ -9,7 +9,7 @@ EMR Hands-On Lab 실습이 완료되었습니다. 마지막으로 지금까지 �
 
 아래 지시를 따라 실습 과정에서 생성한 리소스를 모두 삭제해 주시기 바랍니다.
 
-## Kinesis Firehose
+# Kinesis Firehose
 --- 
 
 1. Kinesis Firehose 페이지에 접속합니다.
@@ -18,7 +18,7 @@ EMR Hands-On Lab 실습이 완료되었습니다. 마지막으로 지금까지 �
 3. Delete를 클릭하여 삭제합니다.
 
 
-## EC2 instances
+# EC2 instances
 --- 
 
 1. EC2 페이지에 접속합니다.
@@ -27,7 +27,7 @@ EMR Hands-On Lab 실습이 완료되었습니다. 마지막으로 지금까지 �
 3. Action -> Instance State -> Terminate를 클릭하여 삭제합니다.
 
 
-## S3 buckets
+# S3 buckets
 --- 
 
 1. S3 페이지에 접속합니다.
@@ -37,7 +37,7 @@ EMR Hands-On Lab 실습이 완료되었습니다. 마지막으로 지금까지 �
 3. Delete를 클릭한 후 버킷 이름을 작성하여 삭제합니다.
 
 
-## EMR clusters
+# EMR clusters
 --- 
 
 1. EMR 페이지에 접속합니다.
@@ -47,6 +47,7 @@ EMR Hands-On Lab 실습이 완료되었습니다. 마지막으로 지금까지 �
 3. Terminate를 클릭하여 삭제합니다.
 
 # 감사합니다 [설문하러 가기](https://www.surveymonkey.com/r/3V99DNP)
+
 
 <p align="center">
 © 2020 Amazon Web Services, Inc. 또는 자회사, All rights reserved.
