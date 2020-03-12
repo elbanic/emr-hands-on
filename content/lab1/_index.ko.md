@@ -182,23 +182,23 @@ EC2에서 Kinesis Firehose delivery stream에 접근하기 위해서는 사전 �
 
 1. 앞서 생성한 인스턴스에 연결합니다. 아래 그림에서 EC2 인스턴스의 IPv4 퍼블릭 IP 또는 퍼블릭 DNS(IPv4)를 참고하여 아래 명령어의 PUBLIC_DNS 부분에 입력합니다.
 
-```
-ssh -i ~/WorkDocs/dev/key/euijj.pem ec2-user@PUBLIC_DNS
-```
+    ```
+    ssh -i key.pem ec2-user@PUBLIC_DNS
+    ```
 
 2. 다음으로, 다음 중 한 가지 방법을 사용하여 인스턴스를 설치합니다.
 
 * Amazon Linux AMI를 이용해 에이전트를 설치하려면 다음 명령을 사용하여 에이전트를 다운로드하고 설치합니다.
 
-```
-sudo yum install –y aws-kinesis-agent
-```
+    ```
+    sudo yum install –y aws-kinesis-agent
+    ```
 
 * Red Hat Enterprise Linux를 사용하여 에이전트를 설치하려면 다음 명령을 사용하여 에이전트를 다운로드하고 설치합니다.
 
-```
-sudo yum install –y https://s3.amazonaws.com/streaming-data-agent/aws-kinesis-agent-latest.amz
-```
+    ```
+    sudo yum install –y https://s3.amazonaws.com/streaming-data-agent/aws-kinesis-agent-latest.amz
+    ```
 
 
 ## 에이전트 구성 및 시작
@@ -294,14 +294,14 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 사전 준비 단계에서 생성한 S3 bucket을 클릭하여 탐색합니다. YYYY/mm/dd/hh 형태로 저장되어 있습니다.
 
-![img](./images/lab1_pic23.png)
+    ![img](./images/lab1_pic23.png)
 ---
 
 ## Kinesis Firehose의 delivery stream에서 모니터링하기 
 
 Kinesis Firehose 페이지에서 앞서 만든 delivery stream을 클릭합니다. 모니터링 탭을 누르면 데이터가 들어오는 것을 실시간 모니터링할 수 있습니다.
 
-![img](./images/lab1_pic24.png)
+    ![img](./images/lab1_pic24.png)
 ---
 
 <p align="center">
