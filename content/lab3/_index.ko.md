@@ -52,7 +52,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     )
     ROW FORMAT DELIMITED
     FIELDS TERMINATED BY ','
-    LOCATION '{INPUT}/order/';
+    LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order/';
 
     CREATE EXTERNAL TABLE IF NOT EXISTS product (
       product_id                  STRING,
@@ -67,7 +67,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     )
     ROW FORMAT DELIMITED
     FIELDS TERMINATED BY ','
-    LOCATION '{INPUT}/product/';
+    LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/product/';
 
     CREATE TABLE IF NOT EXISTS category_price_sum_avg AS
     SELECT P.product_category_name, SUM(O.price) AS sum_price, AVG(O.price) AS avg_price
@@ -147,12 +147,14 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     ![img](./images/lab3_pic2.png)
 --- 
 
-> Step type: Hive program
-> Name: hive-process
-> Script S3 location: s3://bucketname/scripts/hive-process.q
-> Input S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/
-> Output S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/
-> Action on failure: Continue
+    ```
+    Step type: Hive program
+    Name: hive-process
+    Script S3 location: s3://bucketname/scripts/hive-process.q
+    Input S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/
+    Output S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/
+    Action on failure: Continue
+    ```
 
 5. Pending에서 Complete가 될 때까지 기다립니다. 
 Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지 확인합니다.
@@ -165,12 +167,14 @@ Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지
     ![img](./images/lab3_pic4.png)
 ---
 
-> Step type: Spark application
-> Name: pyspark-process
-> Deploy mode: Cluster
-> Application location: s3://bucketname/scripts/pyspark-process.py
-> Arguments: s3://emr-lab-20200224/2020/03/*/* s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog/
-> Action on failure: Continue
+    ```
+    Step type: Spark application
+    Name: pyspark-process
+    Deploy mode: Cluster
+    Application location: s3://bucketname/scripts/pyspark-process.py
+    Arguments: s3://emr-lab-20200224/2020/03/*/* s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog/
+    Action on failure: Continue
+    ```
 
 7. Pending에서 Complete가 될 때까지 기다립니다. 
 Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지 확인합니다.
@@ -253,7 +257,7 @@ Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.co
 1. ***EMR Hands-On Lab 1*** 에서 생성했던 EC2 instance에 연결합니다.
 
     ```
-    ssh -i ~/WorkDocs/dev/key/euijj.pem ec2-user@PUBLIC_DNS
+    ssh -i key.pem ec2-user@PUBLIC_DNS
     ```
 
 2. `vi ~/run_emr_cli.sh` 명령어를 입력하여 run_emr_cli.sh 파일을 생성합니다.  

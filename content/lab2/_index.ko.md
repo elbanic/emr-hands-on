@@ -71,7 +71,8 @@ pre: "<b>2. </b>"
 	![img](./images/lab2_pic1.png)
 ---
 
-5. Release에 emr 최신 버전을 선택하고, Hive와 Spark를 사용할 것이므로, Hadoop, Hive와 Spark를 선택합니다. Next를 눌러 다음 단계로 넘어갑니다.
+5. Release에 emr 최신 버전을 선택하고, Hive와 Spark를 사용할 것이므로, 기본 선택된 Hadoop와 Hive, Spark, Tez를 선택합니다. 
+Lab 4에서 사용할 예정인 Zeppelin도 미리 설치합니다. Next를 눌러 다음 단계로 넘어갑니다.
 
 	![img](./images/lab2_pic2.png)
 ---
