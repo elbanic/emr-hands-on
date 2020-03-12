@@ -1,0 +1,34 @@
+# baseURL 변경
+baseURL = "/emr-hands-on/"
+languageCode = "ko-KR"
+defaultContentLanguage = "ko"
+
+# title 변경
+title = "EMR Hands-on Lab"
+theme = "hugo-theme-learn"
+themesdir = "."
+metaDataFormat = "yaml"
+defaultContentLanguageInSubdir= true
+#ignoreFiles = [ "\\.*lab3\\.*" ]
+
+# description, author 변경
+[params]
+  description = "EMR 중심의 Analytic system Hands-on Lab"
+  author = "Euijun Jeong"
+  showVisitedLinks = true
+  disableBreadcrumb = false
+  disableNextPrev = false
+  themeVariant = "aws"
+
+[outputs]
+home = [ "HTML", "RSS", "JSON"]
+
+[Languages.ko]
+title = "EMR Hands-on Lab"
+weight = 1
+languageName = "한국어"
+
+[[Languages.ko.menu.shortcuts]]
+name = "<i class='fas fa-fw fa-bullhorn'></i> 크레딧"
+url = "/credits/"
+weight = 30
