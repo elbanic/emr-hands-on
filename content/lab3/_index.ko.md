@@ -101,7 +101,8 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     spark = SparkSession \
         .builder \
         .appName("Python Spark SQL basic example") \
-        .config("spark.some.config.option", "some-value") \
+        .config("spark.speculation", "true") \
+        .config("spark.task.reaper.killTimeout", "20") \
         .getOrCreate()
 
     log_raw = spark.read.format('com.databricks.spark.csv') \
@@ -151,7 +152,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     Step type: Hive program
     Name: hive-process
     Script S3 location: s3://bucketname/scripts/hive-process.q
-    Input S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/
+    Input S3 location: 
     Output S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/
     Action on failure: Continue
     ```
@@ -200,29 +201,40 @@ Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.co
 
     ```
     aws emr create-cluster \
-        --auto-scaling-role EMR_AutoScaling_DefaultRole \
-        --applications Name=Hadoop Name=Hive Name=Spark Name=Tez \
-        --ebs-root-volume-size 10 \
-        --ec2-attributes '{"KeyName":"key","InstanceProfile":"EMR_EC2_DefaultRole", \
-            "SubnetId":"subnet-xxxx","EmrManagedSlaveSecurityGroup":"sg-xxxx", \
-            "EmrManagedMasterSecurityGroup":"sg-xxxx"}' \
-        --service-role EMR_DefaultRole \
-        --enable-debugging --release-label emr-5.29.0 \
-        --log-uri 's3n://aws-logs-xxxx-ap-northeast-2/elasticmapreduce/' \
-        --name 'EMR-lab-adhoc-20200311' \
-        --instance-groups '[{"InstanceCount":1,"InstanceGroupType":"MASTER", \
-            "InstanceType":"r3.xlarge","Name":"Master - 1"}, \
-            {"InstanceCount":4,"InstanceGroupType":"CORE", \
-            "InstanceType":"r3.xlarge","Name":"Core - 2"}]' \
-        --scale-down-behavior TERMINATE_AT_TASK_COMPLETION \
-        --region ap-northeast-2
+    --auto-scaling-role EMR_AutoScaling_DefaultRole \
+    --applications Name=Hadoop Name=Hive Name=Spark Name=Tez Name=Zeppelin \
+    --ebs-root-volume-size 10 \
+    --ec2-attributes '{"KeyName":"key","InstanceProfile":"EMR_EC2_DefaultRole","SubnetId":"subnet-xxxx","EmrManagedSlaveSecurityGroup":"sg-xxxx","EmrManagedMasterSecurityGroup":"sg-xxxx"}' \
+    --service-role EMR_DefaultRole \
+    --enable-debugging \
+    --release-label emr-5.29.0 \
+    --log-uri 's3n://aws-logs-xxxx-ap-northeast-2/elasticmapreduce/' \
+    --steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q","-d","OUTPUT=s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
+    --name 'EMR-lab-adhoc-20200306' \
+    --instance-groups '[{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"r3.xlarge","Name":"Master - 1"},{"InstanceCount":3,"InstanceGroupType":"CORE","InstanceType":"r3.xlarge","Name":"Core - 2"}]' \
+    --scale-down-behavior TERMINATE_AT_TASK_COMPLETION \
+    --region ap-northeast-2
     ```
 
 * 위 CLI에 --auto-terminate 옵션을 추가하면 모든 Step이 완료된 후 클러스터를 자동으로 종료하도록 지정할 수 있습니다.
 이 부분을 수정한 최종 버전 CLI는 아래와 같습니다.
 
     ```
-
+    aws emr create-cluster \
+    --auto-scaling-role EMR_AutoScaling_DefaultRole \
+    --applications Name=Hadoop Name=Hive Name=Spark Name=Tez Name=Zeppelin \
+    --ebs-root-volume-size 10 \
+    --ec2-attributes '{"KeyName":"key","InstanceProfile":"EMR_EC2_DefaultRole","SubnetId":"subnet-xxxx","EmrManagedSlaveSecurityGroup":"sg-xxxx","EmrManagedMasterSecurityGroup":"sg-xxxx"}' \
+    --service-role EMR_DefaultRole \
+    --enable-debugging \
+    --release-label emr-5.29.0 \
+    --log-uri 's3n://aws-logs-xxxx-ap-northeast-2/elasticmapreduce/' \
+    --steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q","-d","OUTPUT=s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
+    --name 'EMR-lab-adhoc-20200306' \
+    --instance-groups '[{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"r3.xlarge","Name":"Master - 1"},{"InstanceCount":3,"InstanceGroupType":"CORE","InstanceType":"r3.xlarge","Name":"Core - 2"}]' \
+    --scale-down-behavior TERMINATE_AT_TASK_COMPLETION \
+    --region ap-northeast-2 \
+    --auto-terminate
     ```
 
 # Cronjob<a name="Cronjob"></a>
@@ -263,7 +275,21 @@ Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.co
 2. `vi ~/run_emr_cli.sh` 명령어를 입력하여 run_emr_cli.sh 파일을 생성합니다.  
 
     ```
-
+    aws emr create-cluster \
+    --auto-scaling-role EMR_AutoScaling_DefaultRole \
+    --applications Name=Hadoop Name=Hive Name=Spark Name=Tez Name=Zeppelin \
+    --ebs-root-volume-size 10 \
+    --ec2-attributes '{"KeyName":"key","InstanceProfile":"EMR_EC2_DefaultRole","SubnetId":"subnet-xxxx","EmrManagedSlaveSecurityGroup":"sg-xxxx","EmrManagedMasterSecurityGroup":"sg-xxxx"}' \
+    --service-role EMR_DefaultRole \
+    --enable-debugging \
+    --release-label emr-5.29.0 \
+    --log-uri 's3n://aws-logs-xxxx-ap-northeast-2/elasticmapreduce/' \
+    --steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q","-d","OUTPUT=s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
+    --name 'EMR-lab-adhoc-20200306' \
+    --instance-groups '[{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"r3.xlarge","Name":"Master - 1"},{"InstanceCount":3,"InstanceGroupType":"CORE","InstanceType":"r3.xlarge","Name":"Core - 2"}]' \
+    --scale-down-behavior TERMINATE_AT_TASK_COMPLETION \
+    --region ap-northeast-2 \
+    --auto-terminate
     ```
 
 3. 스크립트 파일에 실행 권한을 부여합니다.
