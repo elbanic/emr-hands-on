@@ -11,7 +11,7 @@ Amazon EMR은 업계 최고 수준의 클라우드 네이티브 빅데이터 플
 
 이번 실습을 통해 다음의 아키텍쳐를 실습하고 이해할 수 있습니다.
      
-![arch](./images/EMR-hands-on-architecture.jpg)
+![arch](./home_images/EMR-hands-on-architecture.jpg)
 
 ## Hands on Lab의 목표
 
