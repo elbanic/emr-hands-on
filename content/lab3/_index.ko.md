@@ -27,7 +27,7 @@ pre: "<b>3. </b>"
 
 
 # EMR Steps<a name="EMR Steps"></a>
-
+---
 
 클러스터에 작업을 제출하는 방식은 여러가지가 있습니다. 우리는 지금까지 Master node에 연결하여 Interactive하게 쿼리하고 프로그래밍하는 내용을 다루었습니다.
 
@@ -185,7 +185,7 @@ Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지
 
 
 # AWS CLI export<a name="AWS CLI"></a>
-
+---
 
 앞서 작업한 Adhoc 분석용 클러스터와 동일한 설정의 클러스터를 만들 수 있습니다.
 
@@ -238,7 +238,7 @@ Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.co
     ```
 
 # Cronjob<a name="Cronjob"></a>
-
+---
 
 ## EC2에 EMR 생성 권한 부여하기
 

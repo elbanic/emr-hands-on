@@ -59,7 +59,7 @@ pre: "<b>2. </b>"
 
 
 # 클러스터 생성<a name="클러스터 생성"></a>
-
+---
 
 이번 단계에서는 Adhoc 분석용 클러스터를 생성합니다.
 
@@ -101,7 +101,7 @@ Lab 4에서 사용할 예정인 Zeppelin도 미리 설치합니다. Next를 눌�
 	
 
 # Analysis<a name="Analysis"></a>
-
+---
 
 이번 단계에서는 실습을 통해 분석 과정을 경험해 봅니다. 가장 많이 사용되는 어플리케이션인 Hive와 Spark를 사용하여 분석 예시를 살펴보겠습니다.
 Hive와 Spark는 아래 설명을 참고하십시오.
@@ -285,7 +285,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 
 # EMR Core node Auto Scaling<a name="EMR Core node Auto Scaling"></a>
-
+---
 
 이번 단계에서는 분석 작업이 많아졌을 때 클러스터를 자동으로 확장하는 방법에 대해 배워봅니다.
 

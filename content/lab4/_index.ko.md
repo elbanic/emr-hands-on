@@ -20,32 +20,29 @@ built on top of the Python programming language.
 
 ## Table of Contents
 
-1. 사전 준비
-2. Zeppelin Notebook
-3. Pandas
-4. Matplotlib
+1. Zeppelin Notebook
+2. Pandas
+3. Matplotlib
 
 
-# 사전 준비
+# Zeppelin Notebook<a name="Zeppelin Notebook"></a>
+---
 
 앞서 Lab 2에서 생성한 `EMR-lab-adhoc-20200306` 클러스터는 Zeppelin을 포함하고 있습니다.
 Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 
 1. EMR 메인 페이지로 이동합니다. [link](https://ap-northeast-2.console.aws.amazon.com/elasticmapreduce/home?region=ap-northeast-2)
 2. Clusters를 선택합니다.
-3. `EMR-lab-adhoc-20200306` 클러스터를 선택하고 
+3. `EMR-lab-adhoc-20200306` 클러스터를 선택하여 상세 페이지로 이동합니다.
 4. Summary 탭의 Enable Web Connection를 클릭하여 지시 사항을 따라합니다.
 그러면 Port forwarding을 통해 Zeppelin에 접속할 수 있습니다.
 
 
-# Zeppelin Notebook<a name="Zeppelin Notebook"></a>
-
-
 # Pandas<a name="Pandas"></a>
-
+---
 
 # Matplotlib<a name="Matplotlib"></a>
-
+---
 
 
 <p align="center">
