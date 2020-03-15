@@ -80,6 +80,7 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 
     ```python
 	%spark.pyspark
+	from pyspark.sql.functions import concat, col, lit, monotonically_increasing_id
 	data = spark.read.format('com.databricks.spark.csv') \
 	    .options(header='false', inferschema='true') \
 	    .option("delimiter", ",") \
@@ -123,8 +124,6 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 
     ```python
 	%spark.pyspark
-	from pyspark.sql.functions import concat, col, lit, monotonically_increasing_id
-
 	data = data.withColumn('f1', concat(lit('1:'),col('_c1')))
 	data = data.withColumn('f2', concat(lit('2:'),col('_c2')))
 
@@ -183,9 +182,9 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 Pandas와 Matplotlib를 이용하기 위해서는 python package를 설치해야 합니다.
 EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 
-```shell
-subo pip install pandas
-subo pip install matplotlib
+```sh
+sudo pip install pandas
+sudo pip install matplotlib
 ```
 
 ![img](./images/lab4_pic5.png)
