@@ -33,7 +33,9 @@ pre: "<b>1. </b>"
 이번 실습에서는 EC2에서 Kinesis Agent를 설치하여 S3에 로그를 저장할 것입니다. 따라서 EC2에서 Kinesis Firehose와 S3에 접근할 IAM role을 생성합니다.
 
 1. IAM 페이지로 이동합니다. [link](https://console.aws.amazon.com/iam/home)
+
 2. 역할을 선택합니다. 
+
 3. 역할 만들기를 선택합니다.
 
     ![img](./images/lab1_pic1.png)
@@ -48,10 +50,10 @@ pre: "<b>1. </b>"
 
 5. 정책 선택에서 `AmazonS3FullAccess`와 `AmazonKinesisFirehoseFullAccess`를 선택하여 권한을 부여합니다. 
 
-![img](./images/lab1_pic3.png)
+    ![img](./images/lab1_pic3.png)
 ---
 
-![img](./images/lab1_pic4.png)
+    ![img](./images/lab1_pic4.png)
 ---
 
 

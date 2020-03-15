@@ -147,7 +147,7 @@ aws s3 cp pyspark-process.py s3://bucketname/
     ![img](./images/lab3_pic2.png)
 ---
 
-    ```
+    ```text
     Step type: Hive program
     Name: hive-process
     Script S3 location: s3://bucketname/scripts/hive-process.q
@@ -167,14 +167,14 @@ Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지
     ![img](./images/lab3_pic4.png)
 ---
 
-```
-Step type: Spark application
-Name: pyspark-process
-Deploy mode: Cluster
-Application location: s3://bucketname/scripts/pyspark-process.py
-Arguments: s3://emr-lab-20200303/2020/03/*/* s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog/
-Action on failure: Continue
-```
+    ```text
+    Step type: Spark application
+    Name: pyspark-process
+    Deploy mode: Cluster
+    Application location: s3://bucketname/scripts/pyspark-process.py
+    Arguments: s3://emr-lab-20200303/2020/03/*/* s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog/
+    Action on failure: Continue
+    ```
 
 7. Pending에서 Complete가 될 때까지 기다립니다. 
 Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지 확인합니다.
