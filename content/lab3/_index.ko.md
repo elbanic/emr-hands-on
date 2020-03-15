@@ -38,7 +38,8 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
 
 ## 스크립트 만들기
 
-1. Hive에서 작업했던 쿼리들을 스크립트로 만듭니다. `hive-process.q` 파일을 생성하여 이전에 실행했던 쿼리를 입력합니다. 여기서 S3 input과 output이 바뀔 수 있으므로, 입력과 출력 값을 파라미터로 받을 수 있도록 쿼리를 수정합니다.
+1. Hive에서 작업했던 쿼리들을 스크립트로 만듭니다. `hive-process.q` 파일을 생성하여 이전에 실행했던 쿼리를 입력합니다. 
+입력 데이터와 출력 데이터의 위치나 prefix는 바뀔 수 있으므로 INPUT과 OUTPUT을 파라미터로 받을 수 있도록 쿼리를 수정합니다.
 
     ```
     CREATE EXTERNAL TABLE IF NOT EXISTS orders (
@@ -52,7 +53,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     )
     ROW FORMAT DELIMITED
     FIELDS TERMINATED BY ','
-    LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order/';
+    LOCATION '${INPUT}/order/';
 
     CREATE EXTERNAL TABLE IF NOT EXISTS product (
       product_id                  STRING,
@@ -67,7 +68,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     )
     ROW FORMAT DELIMITED
     FIELDS TERMINATED BY ','
-    LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/product/';
+    LOCATION '${INPUT}/product/';
 
     CREATE TABLE IF NOT EXISTS category_price_sum_avg AS
     SELECT P.product_category_name, SUM(O.price) AS sum_price, AVG(O.price) AS avg_price
@@ -76,7 +77,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     GROUP BY P.product_category_name
     ORDER BY avg_price DESC;
 
-    INSERT OVERWRITE DIRECTORY '{OUTPUT}/category_price_sum_avg'
+    INSERT OVERWRITE DIRECTORY '${OUTPUT}/category_price_sum_avg'
     ROW FORMAT DELIMITED
     FIELDS TERMINATED BY ','
     STORED AS TEXTFILE 
@@ -209,7 +210,7 @@ Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.co
     --enable-debugging \
     --release-label emr-5.29.0 \
     --log-uri 's3n://aws-logs-xxxx-ap-northeast-2/elasticmapreduce/' \
-    --steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q","-d","OUTPUT=s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
+    --steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
     --name 'EMR-lab-adhoc-20200306' \
     --instance-groups '[{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"r3.xlarge","Name":"Master - 1"},{"InstanceCount":3,"InstanceGroupType":"CORE","InstanceType":"r3.xlarge","Name":"Core - 2"}]' \
     --scale-down-behavior TERMINATE_AT_TASK_COMPLETION \
@@ -229,7 +230,7 @@ Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.co
     --enable-debugging \
     --release-label emr-5.29.0 \
     --log-uri 's3n://aws-logs-xxxx-ap-northeast-2/elasticmapreduce/' \
-    --steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q","-d","OUTPUT=s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
+    --steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
     --name 'EMR-lab-adhoc-20200306' \
     --instance-groups '[{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"r3.xlarge","Name":"Master - 1"},{"InstanceCount":3,"InstanceGroupType":"CORE","InstanceType":"r3.xlarge","Name":"Core - 2"}]' \
     --scale-down-behavior TERMINATE_AT_TASK_COMPLETION \

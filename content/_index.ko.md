@@ -4,7 +4,8 @@ weight: 20
 chapter: true
 ---
 
-
+# EMR Hands-On lab
+--- 
 
 Amazon EMR은 업계 최고 수준의 클라우드 네이티브 빅데이터 플랫폼으로, 방대한 양의 데이터를 대규모로 신속하면서 경제적으로 처리합니다. 이번 Lab은 Amazon EMR을 이용하여 데이터 Analytics의 전반적인 과정을 다루는 실습입니다. 
 
