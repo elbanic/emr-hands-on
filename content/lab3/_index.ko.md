@@ -41,7 +41,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
 1. Hive에서 작업했던 쿼리들을 스크립트로 만듭니다. `hive-process.q` 파일을 생성하여 이전에 실행했던 쿼리를 입력합니다. 
 입력 데이터와 출력 데이터의 위치나 prefix는 바뀔 수 있으므로 INPUT과 OUTPUT을 파라미터로 받을 수 있도록 쿼리를 수정합니다.
 
-    ```
+    ```sql
     CREATE EXTERNAL TABLE IF NOT EXISTS orders (
       order_id                   STRING,
       order_item_id              STRING,
@@ -90,7 +90,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
 데이터 처리 코드는 동일하지만, Spark와 연결하기 위한 코드 몇줄이 추가되었습니다.
 마찬가지로 입력, 출력 위치를 동적으로 바꿀 수 있도록 코드를 약간 수정합니다.
 
-    ```
+    ```python
     import pyspark
     from pyspark.sql import SparkSession
     import pyspark.sql.functions as f
