@@ -43,22 +43,22 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 	[Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/)
 
     ![img](./images/lab4_pic1.png)
----
+	---
 
     ![img](./images/lab4_pic2.png)
----
+	---
 
 
 5. 링크가 활성화된 Zeppelin을 클릭하여 Zeppelin 페이지로 이동합니다.
 
     ![img](./images/lab4_pic3.png)
----
+	---
 
 
 6. 상단의 `Notebook`을 클릭하고 아래 내용을 참조하여 `Create new note`으로 노트북을 생성합니다.
 
     ![img](./images/lab4_pic4.png)
----
+	---
 
 	```
 	Note Name: ecommerce-clustering
@@ -66,7 +66,7 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 	```
 	
 # Spark MLlib<a name="Spark_Llib"></a>
----
+	---
 
 > 여기서는 K-means 알고리즘을 이용하여 Category를 분류(클러스터링)할 것입니다.
 우리는 앞서서 카테고리별 판매 금액 총액과 평균 금액인, `category_price_sum_avg` 데이터를 미리 뽑아두었습니다.
@@ -78,7 +78,7 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 2. Spark를 이용하여 S3에 있는 카테고리별 판매 금액 총액과 평균 금액 데이터를 확인합니다.
 Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니다.
 
-    ```
+    ```python
 	%spark.pyspark
 	data = spark.read.format('com.databricks.spark.csv') \
 	    .options(header='false', inferschema='true') \
@@ -121,7 +121,7 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 3. 위 데이터를 Spark MLlib K-means API에서 처리 가능한 데이터로 변환합니다.
 변환한 데이터를 S3에 다시 저장합니다.
 
-    ```
+    ```python
 	%spark.pyspark
 	from pyspark.sql.functions import concat, col, lit, monotonically_increasing_id
 
@@ -139,7 +139,7 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 4. K-means로 데이터를 클러스터링합니다.
 아래 코드는 [Spark MLlib K-means](https://spark.apache.org/docs/latest/ml-clustering.html#k-means)에서 example 코드를 가져왔습니다.
 
-    ```
+    ```python
 	%spark.pyspark
 	from pyspark.ml.clustering import KMeans
 	from pyspark.ml.evaluation import ClusteringEvaluator
@@ -168,7 +168,7 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 
 5. 결과물을 저장합니다.
 
-    ```
+    ```python
 	%spark.pyspark
 	predictions.drop('features').repartition(1) \
 	    .write.mode('overwrite') \
@@ -183,12 +183,12 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 Pandas와 Matplotlib를 이용하기 위해서는 python package를 설치해야 합니다.
 EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 
-    ```
-	subo pip install pandas
-	subo pip install matplotlib
-    ```
+```shell
+subo pip install pandas
+subo pip install matplotlib
+```
 
-	![img](./images/lab4_pic5.png)
+![img](./images/lab4_pic5.png)
 ---
 
 1. Zeppelin에서 아래 내용을 참고하여 새 노트북을 생성합니다.
@@ -200,7 +200,7 @@ EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 
 2. spark를 이용하여 데이터를 읽어옵니다.
 
-    ```
+    ```python
     %spark.pyspark
 	org = spark.read.format('com.databricks.spark.csv') \
 	    .options(header='true', inferschema='true') \
@@ -217,7 +217,7 @@ EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 
 3. 가져온 두 테이블을 조인하고 데이터를 확인합니다.
 
-    ```
+    ```python
 	%spark.pyspark
 	data = org.join(output, org.label == output.label, how='inner')
 	data.show()
@@ -225,8 +225,7 @@ EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 
 4. 그래프를 그리기 위해 Pandas와 Matplotlib를 import 합니다.
 
-
-    ```
+    ```python
 	%spark.pyspark
 	import matplotlib.pyplot as plt
 	import pandas as pd
@@ -240,20 +239,20 @@ EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 
 5. 그래프를 그립니다. 하나의 셀에 하나의 그래프를 그립니다
 
-	```
+    ```python
 	%spark.pyspark
 	ax1 = pd_df.plot.line(x='sum', y='avg')
-	```
+    ```
 
-	```
+    ```python
 	%spark.pyspark
 	ax2 = pd_df.plot.scatter(x='sum', y='avg', c='prediction', colormap='viridis')
-	```
+    ```
 
 6. 아래와 같이 셀의 크기를 조절하여 보기 쉽게 편집할 수 있습니다.
 
     ![img](./images/lab4_pic6.png)
----
+	---
 
 
 <p align="center">

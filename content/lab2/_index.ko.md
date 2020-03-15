@@ -129,87 +129,87 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 * `hive`를 입력하여 Hive를 실행합니다.
 
-    ![img](./images/lab2_pic8.png)
+![img](./images/lab2_pic8.png)
 ---
 
 * HDFS에 저장된 데이터를 Hive로 가지고 와서 테이블을 생성합니다.
 
 ```sql
-    CREATE EXTERNAL TABLE IF NOT EXISTS orders (
-      order_id                   STRING,
-      order_item_id              STRING,
-      product_id                 STRING,
-      seller_id                  STRING,
-      shipping_limit_date        DATE,
-      price                      DOUBLE,
-      freight_value              DOUBLE
-    )
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order/';
-    
-    CREATE EXTERNAL TABLE IF NOT EXISTS product (
-      product_id                  STRING,
-      product_category_name       STRING,
-      product_name_lenght         int,
-      product_description_lenght  int,
-      product_photos_qty          int,
-      product_weight_g            int,
-      product_length_cm           int,
-      product_height_cm           int,
-      product_width_cm            int
-    )
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    location 's3://id-emr-lab-data-20200306/brazilian-ecommerce/product/';
-    
-    CREATE EXTERNAL TABLE IF NOT EXISTS order_info (
-      order_id                       STRING,
-      customer_id                    STRING,
-      order_status                   STRING,
-      order_purchase_timestamp       STRING,
-      order_approved_at              STRING,
-      order_delivered_carrier_date   STRING,
-      order_delivered_customer_date  STRING,
-      order_estimated_delivery_date  STRING
-    )
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/';
+CREATE EXTERNAL TABLE IF NOT EXISTS orders (
+  order_id                   STRING,
+  order_item_id              STRING,
+  product_id                 STRING,
+  seller_id                  STRING,
+  shipping_limit_date        DATE,
+  price                      DOUBLE,
+  freight_value              DOUBLE
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order/';
+
+CREATE EXTERNAL TABLE IF NOT EXISTS product (
+  product_id                  STRING,
+  product_category_name       STRING,
+  product_name_lenght         int,
+  product_description_lenght  int,
+  product_photos_qty          int,
+  product_weight_g            int,
+  product_length_cm           int,
+  product_height_cm           int,
+  product_width_cm            int
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+location 's3://id-emr-lab-data-20200306/brazilian-ecommerce/product/';
+
+CREATE EXTERNAL TABLE IF NOT EXISTS order_info (
+  order_id                       STRING,
+  customer_id                    STRING,
+  order_status                   STRING,
+  order_purchase_timestamp       STRING,
+  order_approved_at              STRING,
+  order_delivered_carrier_date   STRING,
+  order_delivered_customer_date  STRING,
+  order_estimated_delivery_date  STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/';
 ```
 
 * Product Category별 구매 금액 Sum, Avg을 구하고 저장하는 쿼리를 작성합니다.
 
 ```sql
-    CREATE TABLE IF NOT EXISTS category_price_sum_avg AS
-    SELECT P.product_category_name, SUM(O.price) AS sum_price, AVG(O.price) AS avg_price
-    FROM orders O
-    JOIN product P ON (O.product_id = P.product_id)
-    GROUP BY P.product_category_name
-    ORDER BY avg_price DESC;
-    
-    INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg'
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    STORED AS TEXTFILE 
-    SELECT * from category_price_sum_avg;
+CREATE TABLE IF NOT EXISTS category_price_sum_avg AS
+SELECT P.product_category_name, SUM(O.price) AS sum_price, AVG(O.price) AS avg_price
+FROM orders O
+JOIN product P ON (O.product_id = P.product_id)
+GROUP BY P.product_category_name
+ORDER BY avg_price DESC;
+
+INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE 
+SELECT * from category_price_sum_avg;
 ```
 
 * 각 User별 구매 금액 Sum을 구하고 저장하는 쿼리를 작성합니다.
 
 ```sql
-    CREATE TABLE IF NOT EXISTS customer_total_purchase AS
-    SELECT I.customer_id, SUM(O.price) AS sum_purchase
-    FROM orders O
-    JOIN order_info I ON (O.order_id = I.order_id)
-    GROUP BY I.customer_id 
-    ORDER BY sum_purchase DESC;
-    
-    INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-data-20200306/brazilian-ecommerce/customer_total_purchase'
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    STORED AS TEXTFILE 
-    SELECT * from customer_total_purchase;
+CREATE TABLE IF NOT EXISTS customer_total_purchase AS
+SELECT I.customer_id, SUM(O.price) AS sum_purchase
+FROM orders O
+JOIN order_info I ON (O.order_id = I.order_id)
+GROUP BY I.customer_id 
+ORDER BY sum_purchase DESC;
+
+INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-data-20200306/brazilian-ecommerce/customer_total_purchase'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE 
+SELECT * from customer_total_purchase;
 ```
 
 
@@ -220,72 +220,72 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 * EMR 마스터 노드에 연결된 상태에서 `pyspark`를 입력하여 PySpark를 실행합니다.
 
-  ![img](./images/lab2_pic9.png)
+![img](./images/lab2_pic9.png)
 ---
 
 * PySpark는 프로그래밍이 가능하여 제한적인 SQL보다 더 다양하고 복잡한 작업을 가능하게 합니다. 여기서는 Kinesis에서 저장한 log의 의미있는 부분만 추출하여 저장합니다. 
 
 ```python
-    import pyspark.sql.functions as f
+import pyspark.sql.functions as f
 
-    # 파티션드 데이터 로딩 2020/03/*/* 하면 3월 데이터 모두, 2020/03/02/* 하면 3월 2일 데이터 모두
-    log_raw = spark.read.format('com.databricks.spark.csv') \
-        .options(header='false', inferschema='true') \
-        .option("delimiter", "\t") \
-        .load("s3://emr-lab-20200224/2020/03/*/*") \
-        .cache()
-    
-    splitter = f.split(log_raw['_c0'], ' - - |\"')
-    log_raw = log_raw.withColumn('ip', splitter.getItem(0))
-    log_raw = log_raw.withColumn('timestamp', splitter.getItem(1))
-    log_raw = log_raw.withColumn('request', splitter.getItem(2))
-    log_raw = log_raw.withColumn('response_code', splitter.getItem(3))
-    
-    splitter = pyspark.sql.functions.split(log_raw['response_code'], ' ')
-    log_raw = log_raw.withColumn('status', splitter.getItem(1))
-    log = log_raw.drop('_c0')
-    
-    log.show(20, False)
-    
-    # status가 200인 개수와 200이 아닌 경우의 개수를 세어봅니다.
-    log.filter(log_raw.status == 200).count()
-    log.filter(log_raw.status != 200).count()
-    
-    # 테이블로 정제한 데이터를 저장합니다.
-    # 테이블로 정제한 데이터를 S3에 저장합니다.
-    log.repartition(1) \
-        .write.mode('overwrite') \
-        .csv('s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog')
+# 파티션드 데이터 로딩 2020/03/*/* 하면 3월 데이터 모두, 2020/03/02/* 하면 3월 2일 데이터 모두
+log_raw = spark.read.format('com.databricks.spark.csv') \
+    .options(header='false', inferschema='true') \
+    .option("delimiter", "\t") \
+    .load("s3://emr-lab-20200224/2020/03/*/*") \
+    .cache()
+
+splitter = f.split(log_raw['_c0'], ' - - |\"')
+log_raw = log_raw.withColumn('ip', splitter.getItem(0))
+log_raw = log_raw.withColumn('timestamp', splitter.getItem(1))
+log_raw = log_raw.withColumn('request', splitter.getItem(2))
+log_raw = log_raw.withColumn('response_code', splitter.getItem(3))
+
+splitter = pyspark.sql.functions.split(log_raw['response_code'], ' ')
+log_raw = log_raw.withColumn('status', splitter.getItem(1))
+log = log_raw.drop('_c0')
+
+log.show(20, False)
+
+# status가 200인 개수와 200이 아닌 경우의 개수를 세어봅니다.
+log.filter(log_raw.status == 200).count()
+log.filter(log_raw.status != 200).count()
+
+# 테이블로 정제한 데이터를 저장합니다.
+# 테이블로 정제한 데이터를 S3에 저장합니다.
+log.repartition(1) \
+    .write.mode('overwrite') \
+    .csv('s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog')
 ```
 
 * SQL 형태의 분석도 가능합니다. 앞서 Hive에서 추출한 데이터로부터 도시별 구매 금액과 평균과 합계를 확인합니다.
 
 ```python
-    import pyspark.sql.functions as f
-    customer = spark.read.format('com.databricks.spark.csv') \
-        .options(header='true', inferschema='true') \
-        .option("delimiter", ",") \
-        .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/customer/") \
-        .cache()
-    
-    customer_total_purchase = spark.read.format('com.databricks.spark.csv') \
-        .options(header='false', inferschema='true') \
-        .option("delimiter", ",") \
-        .load("s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer_total_purchase") \
-        .cache()
-    
-    # 조인
-    customer_info = customer.join(customer_total_purchase,
-                                  customer.customer_id == customer_total_purchase._c0, how="inner")
-    
-    # 각 city별 거래 금액 SUM AVG
-    city_purchase = customer_info.groupBy(customer_info.customer_city) \
-        .agg(f.sum(customer_info._c1), f.avg(customer_info._c1))
-    
-    # 결과 데이터를 S3에 저장합니다.
-    city_purchase.repartition(1) \
-        .write.mode('overwrite') \
-        .csv('s3://id-emr-lab-data-20200306/brazilian-ecommerce/city_purchase')
+import pyspark.sql.functions as f
+customer = spark.read.format('com.databricks.spark.csv') \
+    .options(header='true', inferschema='true') \
+    .option("delimiter", ",") \
+    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/customer/") \
+    .cache()
+
+customer_total_purchase = spark.read.format('com.databricks.spark.csv') \
+    .options(header='false', inferschema='true') \
+    .option("delimiter", ",") \
+    .load("s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer_total_purchase") \
+    .cache()
+
+# 조인
+customer_info = customer.join(customer_total_purchase,
+                              customer.customer_id == customer_total_purchase._c0, how="inner")
+
+# 각 city별 거래 금액 SUM AVG
+city_purchase = customer_info.groupBy(customer_info.customer_city) \
+    .agg(f.sum(customer_info._c1), f.avg(customer_info._c1))
+
+# 결과 데이터를 S3에 저장합니다.
+city_purchase.repartition(1) \
+    .write.mode('overwrite') \
+    .csv('s3://id-emr-lab-data-20200306/brazilian-ecommerce/city_purchase')
 ```
 
 
@@ -300,12 +300,12 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 4. Hardware 탭을 선택합니다.
 5. Auto Scaling 탭의 Not enabled 옆의 수정 아이콘을 클릭합니다.
 
-  ![img](./images/lab2_pic18.png)
+    ![img](./images/lab2_pic18.png)
 ---
 
 6. 아래 스크린샷을 참고하여 값을 채워 넣습니다. 모든 값이 정확하게 입력되었는지 확인한 후 Modify를 클릭하여 적용합니다. 
 
-  ![img](./images/lab2_pic19.png)
+    ![img](./images/lab2_pic19.png)
 ---
 
 * Scale out
@@ -321,7 +321,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 7. Auto Scaling 상태가 Pending에서 Attached가 될 때까지 기다립니다.
 
-  ![img](./images/lab2_pic20.png)
+    ![img](./images/lab2_pic20.png)
 ---
 
 8. 앞서 실험한 분석 예시를 여러 개의 쉘을 띄우고 동시에 실행해 봅니다. 여러 개의 분석 작업이 동시에 실행되면 YARN에서 사용할 수 있는 잔여 메모리의 비율이 감소하고, 대기 중인 컨테이너가 증가하여, 오토 스케일링 기능이 동작하는 것을 확인할 수 있습니다.

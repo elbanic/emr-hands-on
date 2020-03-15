@@ -84,11 +84,9 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     SELECT * from category_price_sum_avg;
     ```
 
-3. PySpark에서 작업했던 코드를 python 스크립트로 만듭니다. 
-`pyspark-process.py` 파일을 생성하여 아래의 코드를 입력합니다.
+3. PySpark에서 작업했던 코드를 python 스크립트로 만듭니다. `pyspark-process.py` 파일을 생성하여 아래의 코드를 입력합니다.
 
-데이터 처리 코드는 동일하지만, Spark와 연결하기 위한 코드 몇줄이 추가되었습니다.
-마찬가지로 입력, 출력 위치를 동적으로 바꿀 수 있도록 코드를 약간 수정합니다.
+    데이터 처리 코드는 동일하지만, Spark와 연결하기 위한 코드 몇줄이 추가되었습니다. 마찬가지로 입력, 출력 위치를 동적으로 바꿀 수 있도록 코드를 약간 수정합니다.
 
     ```python
     import pyspark
@@ -102,8 +100,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     spark = SparkSession \
         .builder \
         .appName("Python Spark SQL basic example") \
-        .config("spark.speculation", "true") \
-        .config("spark.task.reaper.killTimeout", "20") \
+        .config("spark.some.config.option", "some-value") \
         .getOrCreate()
 
     log_raw = spark.read.format('com.databricks.spark.csv') \
@@ -147,14 +144,14 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
 4. 아래 값을 참조하여 Hive program을 추가합니다.
 
     ![img](./images/lab3_pic2.png)
---- 
+    ---
 
     ```
     Step type: Hive program
     Name: hive-process
     Script S3 location: s3://bucketname/scripts/hive-process.q
-    Input S3 location: 
-    Output S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/
+    Input S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/
+    Output S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/
     Action on failure: Continue
     ```
 
@@ -162,12 +159,12 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
 Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지 확인합니다.
 
     ![img](./images/lab3_pic3.png)
----
+    ---
 
 6. 이번에는 아래 값을 참조하여 PySpark 작업을 Step으로 추가합니다.
 
     ![img](./images/lab3_pic4.png)
----
+    ---
 
     ```
     Step type: Spark application
@@ -182,7 +179,7 @@ Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지
 Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지 확인합니다.
 
     ![img](./images/lab3_pic5.png)
----
+    ---
 
 
 # AWS CLI export<a name="AWS CLI"></a>
@@ -195,7 +192,7 @@ Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지
 3. AWS CLI export를 클릭합니다.
 
     ![img](./images/lab3_pic6.png)
----
+    ---
 
 4. 화면에 출력된 Cli 문자열을 복사하여 따로 저장해 둡니다. 아래와 같은 형태가 되어야 합니다. 이 CLI를 호출하면 동일한 설정의 클러스터가 생성됩니다. 
 Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.com/cli/latest/reference/emr/index.html) Reference 공식 문서를 참조해 주시기 바랍니다.
@@ -243,7 +240,7 @@ Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.co
 
 ## EC2에 EMR 생성 권한 부여하기
 
-이번 실습에서는 위에서 완성한 AWS Cli를 Cronjob과 같은 도구를 이용하여 반복적으로 실행하는 방법을 알아봅니다.
+이번 실습에서는 위에서 완성한 AWS Cli를 Cronjob과 같은 도구를 이용하여 반복적으로 생성하는 방법을 알아봅니다.
 
 ***EMR Hands-On Lab 1*** 에서 생성했던 EC2 instance에서 실행할 것입니다.
 
@@ -255,12 +252,12 @@ Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.co
 4. Permission 탭에서 Attach policy를 클릭합니다.
 
     ![img](./images/lab3_pic7.png)
----
+    ---
     
 5. 검색창에 ElasticMapReduce를 입력하여 `AmazonElasticMapReduceFullAccess` 선택하고 Attach를 클릭합니다.
 
     ![img](./images/lab3_pic8.png)
----
+    ---
 
 6. 이제 해당 EC2 instance에서 EMR API 권한이 부여되었습니다.
 
