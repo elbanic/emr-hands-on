@@ -7,18 +7,14 @@ pre: "<b>4. </b>"
 
 이번 실습에서는 그동안 뽑아 두었던 데이터를 응용하고 시각화하는 방법에 대해 학습합니다. 
 
-* Zeppelin
-> Web-based notebook that enables data-driven, interactive data analytics and collaborative documents with SQL, Scala and more.
+* Zeppelin: Web-based notebook that enables data-driven, interactive data analytics and collaborative documents with SQL, Scala and more.
 
-* Spark MLlib
-> MLlib is Apache Spark's scalable machine learning library.
+* Spark MLlib: MLlib is Apache Spark's scalable machine learning library.
 
-* Pandas
-> pandas is a fast, powerful, flexible and easy to use open source data analysis and manipulation tool,
+* Pandas: pandas is a fast, powerful, flexible and easy to use open source data analysis and manipulation tool,
 built on top of the Python programming language.
 
-* Matplotlib
-> Matplotlib is a comprehensive library for creating static, animated, and interactive visualizations in Python.
+* Matplotlib: Matplotlib is a comprehensive library for creating static, animated, and interactive visualizations in Python.
 
 
 ## Table of Contents
@@ -46,22 +42,22 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 
 	[Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/)
 
-    ![img](./images/lab3_pic1.png)
+    ![img](./images/lab4_pic1.png)
 ---
 
-    ![img](./images/lab3_pic2.png)
+    ![img](./images/lab4_pic2.png)
 ---
 
 
 5. 링크가 활성화된 Zeppelin을 클릭하여 Zeppelin 페이지로 이동합니다.
 
-    ![img](./images/lab3_pic3.png)
+    ![img](./images/lab4_pic3.png)
 ---
 
 
 6. 상단의 `Notebook`을 클릭하고 아래 내용을 참조하여 `Create new note`으로 노트북을 생성합니다.
 
-    ![img](./images/lab3_pic4.png)
+    ![img](./images/lab4_pic4.png)
 ---
 
 	```
@@ -187,12 +183,12 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 Pandas와 Matplotlib를 이용하기 위해서는 python package를 설치해야 합니다.
 EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 
-	```
+    ```
 	subo pip install pandas
 	subo pip install matplotlib
-	```
+    ```
 
-    ![img](./images/lab3_pic5.png)
+	![img](./images/lab4_pic5.png)
 ---
 
 1. Zeppelin에서 아래 내용을 참고하여 새 노트북을 생성합니다.
@@ -242,7 +238,7 @@ EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 	pd_df = data.selectExpr('category','sum','avg','prediction').toPandas()
     ```
 
-5. 그래프를 그립니다. 하나의 셀에 하나의 그래프를 그려넣습니다.
+5. 그래프를 그립니다. 하나의 셀에 하나의 그래프를 그립니다
 
 	```
 	%spark.pyspark
@@ -256,7 +252,7 @@ EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 
 6. 아래와 같이 셀의 크기를 조절하여 보기 쉽게 편집할 수 있습니다.
 
-    ![img](./images/lab3_pic6.png)
+    ![img](./images/lab4_pic6.png)
 ---
 
 
