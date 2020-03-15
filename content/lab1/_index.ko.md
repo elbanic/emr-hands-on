@@ -36,13 +36,13 @@ pre: "<b>1. </b>"
 2. 역할을 선택합니다. 
 3. 역할 만들기를 선택합니다.
 
-![img](./images/lab1_pic1.png)
+    ![img](./images/lab1_pic1.png)
 ---
 
 
 4. EC2를 선택합니다.
 
-![img](./images/lab1_pic2.png)
+    ![img](./images/lab1_pic2.png)
 ---
 
 
@@ -59,13 +59,13 @@ pre: "<b>1. </b>"
 
 7. 역할 이름에 `emrlabs-ec2-kinesis-role`를 입력하고 역할 만들기를 클합니다.
 
-![img](./images/lab1_pic5.png)
+    ![img](./images/lab1_pic5.png)
 ---
 
 
 8. EC2에서 S3와 Kinesis Firehose로 접근할 수 있는 역할이 생성되었습니다.
 
-![img](./images/lab1_pic6.png)
+    ![img](./images/lab1_pic6.png)
 ---
 
 
@@ -77,16 +77,17 @@ Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니�
 2. 역할을 선택합니다. 
 3. 역할 만들기를 선택합니다.
 
-![img](./images/lab1_pic7.png)
+    ![img](./images/lab1_pic7.png)
 ---
 
 
 4. Kinesis Firehose를 선택합니다.
 
-![img](./images/lab1_pic8.png)
+    ![img](./images/lab1_pic8.png)
 ---
 
-![img](./images/lab1_pic9.png)
+
+    ![img](./images/lab1_pic9.png)
 ---
 
 
@@ -96,13 +97,13 @@ Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니�
 
 7. 역할 이름에 `firehose_delivery_role`를 입력하고 역할 만들기를 클합니다.
 
-![img](./images/lab1_pic10.png)
+    ![img](./images/lab1_pic10.png)
 ---
 
 
 8. Firehose에서 다른 서비스로 접근을 제어할 수 있는 역할이 생성되었습니다.
 
-![img](./images/lab1_pic11.png)
+    ![img](./images/lab1_pic11.png)
 ---
 
 
@@ -116,13 +117,13 @@ Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니�
 
 3. 보안 그룹 생성을 클릭합니다.
 
-![img](./images/lab1_pic12.png)
+    ![img](./images/lab1_pic12.png)
 ---
 
 
 4. `emr-lab-sg`을 입력합니다. VPC는 기본값을 선택합니다.
 
-![img](./images/lab1_pic13.png)
+    ![img](./images/lab1_pic13.png)
 ---
 
 
@@ -139,34 +140,35 @@ Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니�
 
 4. 딜리버리 스트림의 이름을 `emr-lab-delivery-stream`으로 입력합니다.
 
-![img](./images/lab1_pic14.png)
+    ![img](./images/lab1_pic14.png)
 ---
 
 
 5. Data transformation과 Record format conversion은 `Disabled`로 둡니다
 
-![img](./images/lab1_pic15.png)
+    ![img](./images/lab1_pic15.png)
 ---
 
 
 6. Destination을 Amazon S3로 지정합니다. 버킷명은 Create new를 통해 `id-emr-lab-20200306`로 새로 생성합니다.
 
-![img](./images/lab1_pic16.png)
+    ![img](./images/lab1_pic16.png)
 ---
 
 
 7. 아래 화면을 참고하여 모든 값을 채워넣습니다. Permissions 탭에서 create new or choose를 클릭하여 사전 준비 단계에서 만들었던 firehose_delivery_role에 권한을 부여합니다.  
 
-![img](./images/lab1_pic17.png)
+    ![img](./images/lab1_pic17.png)
 ---
 
-![img](./images/lab1_pic18.png)
+
+    ![img](./images/lab1_pic18.png)
 ---
 
 
 8. 최종 확인 후 delivery stream을 생성합니다.
 
-![img](./images/lab1_pic19.png)
+    ![img](./images/lab1_pic19.png)
 ---
 
 
@@ -200,12 +202,13 @@ EC2에서 Kinesis Firehose delivery stream에 접근하기 위해서는 사전 �
 
 2. 좌측 상단의 버튼 메뉴에서 작업 -> 인스턴스 설정 -> IAM 역할 연결을 선택합니다.
 
-![img](./images/lab1_pic20.png)
+    ![img](./images/lab1_pic20.png)
 ---
+
 
 3. 사전 조건에서 생성한 역할 `emrlabs-ec2-kinesis-role` 선택합니다.
 
-![img](./images/lab1_pic21.png)
+    ![img](./images/lab1_pic21.png)
 ---
 
 
