@@ -244,14 +244,14 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 연결된 EC2 인스턴스에서 아래와 같이 편집창을 열고 *gen-apache-log.py* 파일을 생성합니다.
 
-    ```
+```
     cd ~
     vi gen-apache-log.py
-    ```
+```
 
 소스코드를 입력하고 :wq를 입력하여 파일을 저장합니다.
 
-    ```
+```
     import random
     import time
     import json
@@ -280,18 +280,18 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
             time.sleep(0.01)
         f.close()
         inc += 1
-    ```
+```
 
 
-    ```
+```
     aws s3 cp s3://public-access-sample-code/requests_string.txt ~/
-    ```
+```
 
 파일을 실행합니다.
 
-    ```
+```
     python gen-apache-log.py
-    ```
+```
 
 # 데이터 확인하기<a name="데이터 확인하기"></a>
 ---
