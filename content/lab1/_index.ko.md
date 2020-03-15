@@ -64,7 +64,7 @@ pre: "<b>1. </b>"
 ---
 
 
-## EC2에서 Kinesis Firehose 접근 권한
+## Kinesis Firehose에서 S3 접근 권한
 
 Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니다. 이 권한을 IAM role로 지정하여 할 수 있습니다.
 
@@ -114,13 +114,9 @@ Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니�
 # Kinesis Firehose delivery streams<a name="Kinesis Firehose delivery streams"></a>
 ---
 
-AWS Management 콘솔 또는 AWS SDK를 사용해 선택한 대상으로 전송될 Kinesis Data Firehose 전송 스트림을(를) 생성할 수 있습니다.
-
-생성한 후 언제든 Kinesis Data Firehose 콘솔이나 UpdateDestination을(를) 사용해 전송 스트림의 구성을 업데이트할 수 있습니다. 구성이 업데이트되는 동안 Kinesis Data Firehose 전송 스트림은(는) ACTIVE 상태로 남아 있으며 계속 데이터를 보낼 수 있습니다. 업데이트된 구성은 일반적으로 몇 분 내에 적용됩니다. 구성을 업데이트할 때마다 Kinesis Data Firehose 전송 스트림의 버전 번호가 1씩 증가합니다. 전송된 Amazon S3 객체 이름에 반영됩니다. 자세한 내용은 Amazon S3 객체 이름 형식 단원을 참조하십시오.
-
 이번 실습에서는 Kinesis Data Firehose 전송 스트림을 생성합니다.
 
-1. Amazon Kinesis 페이지로 이동합니다. 
+1. Amazon Kinesis 페이지로 이동합니다. [link](https://ap-northeast-2.console.aws.amazon.com/kinesis/home?region=ap-northeast-2#/dashboard)
 2. 좌측 네비게이션 메뉴에서 Data Firehose를 클릭합니다.
 3. Create delivery stream을 클릭합니다.
 4. 딜리버리 스트림의 이름을 `emr-lab-delivery-stream`으로 입력합니다.
@@ -192,6 +188,7 @@ EC2에서 Kinesis Firehose delivery stream에 접근하기 위해서는 사전 �
 * Amazon Linux AMI를 이용해 에이전트를 설치하려면 다음 명령을 사용하여 에이전트를 다운로드하고 설치합니다.
 
     ```
+    sudo yum update -y
     sudo yum install –y aws-kinesis-agent
     ```
 
@@ -231,12 +228,15 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 2. 에이전트를 수동으로 시작합니다.
 
+    ```
     sudo service aws-kinesis-agent start
+    ```
 
 3. (필요하면) 시스템 시작 시 에이전트가 시작되도록 구성합니다.
 
+    ```
     sudo chkconfig aws-kinesis-agent on
-
+    ```
 
 ## 데이터 생성하기<a name="데이터 생성하기"></a>
 
@@ -244,14 +244,14 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 연결된 EC2 인스턴스에서 아래와 같이 편집창을 열고 *gen-apache-log.py* 파일을 생성합니다.
 
-    
+    ```
     cd ~
     vi gen-apache-log.py
-    
+    ```
 
 소스코드를 입력하고 :wq를 입력하여 파일을 저장합니다.
 
-    
+    ```
     import random
     import time
     import json
@@ -280,12 +280,18 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
             time.sleep(0.01)
         f.close()
         inc += 1
-    
+    ```
+
+
+    ```
+    aws s3 cp s3://public-access-sample-code/requests_string.txt ~/
+    ```
 
 파일을 실행합니다.
 
+    ```
     python gen-apache-log.py
-
+    ```
 
 # 데이터 확인하기<a name="데이터 확인하기"></a>
 ---
@@ -296,14 +302,14 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 사전 준비 단계에서 생성한 S3 bucket을 클릭하여 탐색합니다. YYYY/mm/dd/hh 형태로 저장되어 있습니다.
 
-    ![img](./images/lab1_pic23.png)
+![img](./images/lab1_pic23.png)
 ---
 
 ## Kinesis Firehose의 delivery stream에서 모니터링하기 
 
 Kinesis Firehose 페이지에서 앞서 만든 delivery stream을 클릭합니다. 모니터링 탭을 누르면 데이터가 들어오는 것을 실시간 모니터링할 수 있습니다.
 
-    ![img](./images/lab1_pic24.png)
+![img](./images/lab1_pic24.png)
 ---
 
 <p align="center">
