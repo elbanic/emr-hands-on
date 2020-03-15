@@ -27,26 +27,16 @@ pre: "<b>2. </b>"
 
 1. Lab 1에서 만들었던 EC2 instance에 연결합니다. 인스턴스는 `EMRLAB-KIN` Name 태그를 가지고 있습니다.
 
-	```sh
-	ssh -i key_file.pem ec2-user@PUBLIC_DNS
-	```
-
-
----
-
-
-
-
-
-
-
+```sh
+ssh -i key_file.pem ec2-user@PUBLIC_DNS
+```
 
 2. Lab 1에서 우리는 S3 버킷 권한을 부여했습니다. 이 권한이 있으므로 아래 명령어를 통해 버킷을 생성합니다. 버킷은 분석용 데이터를 저장할 버킷입니다. 
 *id-* 부분은 본인의 account id로 수정합니다.
 
-	```sh
-	aws s3 mb s3://id-emr-lab-data-20200306
-	```
+```sh
+aws s3 mb s3://id-emr-lab-data-20200306
+```
 
 ## 데이터 다운로드
 
@@ -60,12 +50,12 @@ pre: "<b>2. </b>"
 실습에서는 order, order_info, product, customer 데이터만 사용할 것입니다.
 또한 Hive는 directory 단위로 데이터를 읽습니다. 따라서 각 directory의 역할을 할 수 있도록 prefix를 추가합니다.
 
-    ```sh
-    aws s3 cp brazilian-ecommerce/olist_customers_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer/
-    aws s3 cp brazilian-ecommerce/olist_products_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/product/
-    aws s3 cp brazilian-ecommerce/olist_order_items_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/order/
-    aws s3 cp brazilian-ecommerce/olist_orders_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/
-    ```
+```sh
+aws s3 cp brazilian-ecommerce/olist_customers_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer/
+aws s3 cp brazilian-ecommerce/olist_products_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/product/
+aws s3 cp brazilian-ecommerce/olist_order_items_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/order/
+aws s3 cp brazilian-ecommerce/olist_orders_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/
+```
   
     실습에서 사용한 데이터가 준비되었습니다.
 
@@ -149,83 +139,83 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 1. HDFS에 저장된 데이터를 Hive로 가지고 와서 테이블을 생성합니다.
 
-    ```sql
-    CREATE EXTERNAL TABLE IF NOT EXISTS orders (
-    order_id                   STRING,
-    order_item_id              STRING,
-    product_id                 STRING,
-    seller_id                  STRING,
-    shipping_limit_date        DATE,
-    price                      DOUBLE,
-    freight_value              DOUBLE
-    )
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order/';
+```sql
+CREATE EXTERNAL TABLE IF NOT EXISTS orders (
+order_id                   STRING,
+order_item_id              STRING,
+product_id                 STRING,
+seller_id                  STRING,
+shipping_limit_date        DATE,
+price                      DOUBLE,
+freight_value              DOUBLE
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order/';
 
-    CREATE EXTERNAL TABLE IF NOT EXISTS product (
-    product_id                  STRING,
-    product_category_name       STRING,
-    product_name_lenght         int,
-    product_description_lenght  int,
-    product_photos_qty          int,
-    product_weight_g            int,
-    product_length_cm           int,
-    product_height_cm           int,
-    product_width_cm            int
-    )
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    location 's3://id-emr-lab-data-20200306/brazilian-ecommerce/product/';
+CREATE EXTERNAL TABLE IF NOT EXISTS product (
+product_id                  STRING,
+product_category_name       STRING,
+product_name_lenght         int,
+product_description_lenght  int,
+product_photos_qty          int,
+product_weight_g            int,
+product_length_cm           int,
+product_height_cm           int,
+product_width_cm            int
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+location 's3://id-emr-lab-data-20200306/brazilian-ecommerce/product/';
 
-    CREATE EXTERNAL TABLE IF NOT EXISTS order_info (
-    order_id                       STRING,
-    customer_id                    STRING,
-    order_status                   STRING,
-    order_purchase_timestamp       STRING,
-    order_approved_at              STRING,
-    order_delivered_carrier_date   STRING,
-    order_delivered_customer_date  STRING,
-    order_estimated_delivery_date  STRING
-    )
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/';
-    ```
+CREATE EXTERNAL TABLE IF NOT EXISTS order_info (
+order_id                       STRING,
+customer_id                    STRING,
+order_status                   STRING,
+order_purchase_timestamp       STRING,
+order_approved_at              STRING,
+order_delivered_carrier_date   STRING,
+order_delivered_customer_date  STRING,
+order_estimated_delivery_date  STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/';
+```
 
 2. Product Category별 구매 금액 Sum, Avg을 구하고 저장하는 쿼리를 작성합니다.
 
-    ```sql
-    CREATE TABLE IF NOT EXISTS category_price_sum_avg AS
-    SELECT P.product_category_name, SUM(O.price) AS sum_price, AVG(O.price) AS avg_price
-    FROM orders O
-    JOIN product P ON (O.product_id = P.product_id)
-    GROUP BY P.product_category_name
-    ORDER BY avg_price DESC;
+```sql
+CREATE TABLE IF NOT EXISTS category_price_sum_avg AS
+SELECT P.product_category_name, SUM(O.price) AS sum_price, AVG(O.price) AS avg_price
+FROM orders O
+JOIN product P ON (O.product_id = P.product_id)
+GROUP BY P.product_category_name
+ORDER BY avg_price DESC;
 
-    INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg'
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    STORED AS TEXTFILE 
-    SELECT * from category_price_sum_avg;
-    ```
+INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE 
+SELECT * from category_price_sum_avg;
+```
 
 3. 각 User별 구매 금액 Sum을 구하고 저장하는 쿼리를 작성합니다.
 
-    ```sql
-    CREATE TABLE IF NOT EXISTS customer_total_purchase AS
-    SELECT I.customer_id, SUM(O.price) AS sum_purchase
-    FROM orders O
-    JOIN order_info I ON (O.order_id = I.order_id)
-    GROUP BY I.customer_id 
-    ORDER BY sum_purchase DESC;
+```sql
+CREATE TABLE IF NOT EXISTS customer_total_purchase AS
+SELECT I.customer_id, SUM(O.price) AS sum_purchase
+FROM orders O
+JOIN order_info I ON (O.order_id = I.order_id)
+GROUP BY I.customer_id 
+ORDER BY sum_purchase DESC;
 
-    INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-data-20200306/brazilian-ecommerce/customer_total_purchase'
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    STORED AS TEXTFILE 
-    SELECT * from customer_total_purchase;
-    ```
+INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-data-20200306/brazilian-ecommerce/customer_total_purchase'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE 
+SELECT * from customer_total_purchase;
+```
 
 
 ## PySpark
@@ -240,68 +230,68 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 1. PySpark는 프로그래밍이 가능하여 제한적인 SQL보다 더 다양하고 복잡한 작업을 가능하게 합니다. 여기서는 Kinesis에서 저장한 log의 의미있는 부분만 추출하여 저장합니다. 
 
-    ```python
-    import pyspark.sql.functions as f
+```python
+import pyspark.sql.functions as f
 
-    # 파티션드 데이터 로딩 2020/03/*/* 하면 3월 데이터 모두, 2020/03/02/* 하면 3월 2일 데이터 모두
-    log_raw = spark.read.format('com.databricks.spark.csv') \
-      .options(header='false', inferschema='true') \
-      .option("delimiter", "\t") \
-      .load("s3://emr-lab-20200224/2020/03/*/*") \
-      .cache()
+# 파티션드 데이터 로딩 2020/03/*/* 하면 3월 데이터 모두, 2020/03/02/* 하면 3월 2일 데이터 모두
+log_raw = spark.read.format('com.databricks.spark.csv') \
+  .options(header='false', inferschema='true') \
+  .option("delimiter", "\t") \
+  .load("s3://emr-lab-20200224/2020/03/*/*") \
+  .cache()
 
-    splitter = f.split(log_raw['_c0'], ' - - |\"')
-    log_raw = log_raw.withColumn('ip', splitter.getItem(0))
-    log_raw = log_raw.withColumn('timestamp', splitter.getItem(1))
-    log_raw = log_raw.withColumn('request', splitter.getItem(2))
-    log_raw = log_raw.withColumn('response_code', splitter.getItem(3))
+splitter = f.split(log_raw['_c0'], ' - - |\"')
+log_raw = log_raw.withColumn('ip', splitter.getItem(0))
+log_raw = log_raw.withColumn('timestamp', splitter.getItem(1))
+log_raw = log_raw.withColumn('request', splitter.getItem(2))
+log_raw = log_raw.withColumn('response_code', splitter.getItem(3))
 
-    splitter = pyspark.sql.functions.split(log_raw['response_code'], ' ')
-    log_raw = log_raw.withColumn('status', splitter.getItem(1))
-    log = log_raw.drop('_c0')
+splitter = pyspark.sql.functions.split(log_raw['response_code'], ' ')
+log_raw = log_raw.withColumn('status', splitter.getItem(1))
+log = log_raw.drop('_c0')
 
-    log.show(20, False)
+log.show(20, False)
 
-    # status가 200인 개수와 200이 아닌 경우의 개수를 세어봅니다.
-    log.filter(log_raw.status == 200).count()
-    log.filter(log_raw.status != 200).count()
+# status가 200인 개수와 200이 아닌 경우의 개수를 세어봅니다.
+log.filter(log_raw.status == 200).count()
+log.filter(log_raw.status != 200).count()
 
-    # 테이블로 정제한 데이터를 저장합니다.
-    # 테이블로 정제한 데이터를 S3에 저장합니다.
-    log.repartition(1) \
-      .write.mode('overwrite') \
-      .csv('s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog')
-    ```
+# 테이블로 정제한 데이터를 저장합니다.
+# 테이블로 정제한 데이터를 S3에 저장합니다.
+log.repartition(1) \
+  .write.mode('overwrite') \
+  .csv('s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog')
+```
 
 2. SQL 형태의 분석도 가능합니다. 앞서 Hive에서 추출한 데이터로부터 도시별 구매 금액과 평균과 합계를 확인합니다.
 
-    ```python
-    import pyspark.sql.functions as f
-    customer = spark.read.format('com.databricks.spark.csv') \
-      .options(header='true', inferschema='true') \
-      .option("delimiter", ",") \
-      .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/customer/") \
-      .cache()
+```python
+import pyspark.sql.functions as f
+customer = spark.read.format('com.databricks.spark.csv') \
+  .options(header='true', inferschema='true') \
+  .option("delimiter", ",") \
+  .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/customer/") \
+  .cache()
 
-    customer_total_purchase = spark.read.format('com.databricks.spark.csv') \
-      .options(header='false', inferschema='true') \
-      .option("delimiter", ",") \
-      .load("s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer_total_purchase") \
-      .cache()
+customer_total_purchase = spark.read.format('com.databricks.spark.csv') \
+  .options(header='false', inferschema='true') \
+  .option("delimiter", ",") \
+  .load("s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer_total_purchase") \
+  .cache()
 
-    # 조인
-    customer_info = customer.join(customer_total_purchase,
-                                customer.customer_id == customer_total_purchase._c0, how="inner")
+# 조인
+customer_info = customer.join(customer_total_purchase,
+                            customer.customer_id == customer_total_purchase._c0, how="inner")
 
-    # 각 city별 거래 금액 SUM AVG
-    city_purchase = customer_info.groupBy(customer_info.customer_city) \
-      .agg(f.sum(customer_info._c1), f.avg(customer_info._c1))
+# 각 city별 거래 금액 SUM AVG
+city_purchase = customer_info.groupBy(customer_info.customer_city) \
+  .agg(f.sum(customer_info._c1), f.avg(customer_info._c1))
 
-    # 결과 데이터를 S3에 저장합니다.
-    city_purchase.repartition(1) \
-      .write.mode('overwrite') \
-      .csv('s3://id-emr-lab-data-20200306/brazilian-ecommerce/city_purchase')
-    ```
+# 결과 데이터를 S3에 저장합니다.
+city_purchase.repartition(1) \
+  .write.mode('overwrite') \
+  .csv('s3://id-emr-lab-data-20200306/brazilian-ecommerce/city_purchase')
+```
 
 
 # EMR Auto Scaling<a name="EMR Auto Scaling"></a>

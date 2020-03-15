@@ -48,7 +48,6 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
     ![img](./images/lab4_pic1.png)
 ---
 
-
     ![img](./images/lab4_pic2.png)
 ---
 
@@ -63,10 +62,10 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
     ![img](./images/lab4_pic4.png)
 ---
 
-	```
-	Note Name: ecommerce-clustering
-	Default Interpreter: python
-	```
+```
+Note Name: ecommerce-clustering
+Default Interpreter: python
+```
 	
 # Spark MLlib<a name="Spark_Llib"></a>
 ---
@@ -81,112 +80,112 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 2. Spark를 이용하여 S3에 있는 카테고리별 판매 금액 총액과 평균 금액 데이터를 확인합니다.
 Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니다.
 
-    ```python
-	%spark.pyspark
-	from pyspark.sql.functions import concat, col, lit, monotonically_increasing_id
+```python
+%spark.pyspark
+from pyspark.sql.functions import concat, col, lit, monotonically_increasing_id
 
-	# S3에 있는 데이터를 읽습니다
-	data = spark.read.format('com.databricks.spark.csv') \
-	    .options(header='false', inferschema='true') \
-	    .option("delimiter", ",") \
-	    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/") \
-	    .cache()
+# S3에 있는 데이터를 읽습니다
+data = spark.read.format('com.databricks.spark.csv') \
+    .options(header='false', inferschema='true') \
+    .option("delimiter", ",") \
+    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/") \
+    .cache()
 
-	# 데이터에 잘못된 값이 끼어 있어 제외시킵니다.
-	data = data.filter("_c1 not like '%\N%'")
+# 데이터에 잘못된 값이 끼어 있어 제외시킵니다.
+data = data.filter("_c1 not like '%\N%'")
 
-	# 데이터의 헤더를 명명합니다.
-	data = data.selectExpr("_c0 as category", "_c1 as sum", "_c2 as avg")
-	data = data.repartition(1).withColumn('label', monotonically_increasing_id())
-	data.show(100, False)
+# 데이터의 헤더를 명명합니다.
+data = data.selectExpr("_c0 as category", "_c1 as sum", "_c2 as avg")
+data = data.repartition(1).withColumn('label', monotonically_increasing_id())
+data.show(100, False)
 
-	data.repartition(1) \
-	    .write.mode('overwrite') \
-	    .option("sep","\t") \
-	    .option("header","true") \
-	    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/org_clustering/")
-    ```
+data.repartition(1) \
+    .write.mode('overwrite') \
+    .option("sep","\t") \
+    .option("header","true") \
+    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/org_clustering/")
+```
 
 	* 아래와 같은 결과물이 출력됩니다.
 
-    ```
-	+---------------------------------------------+------------------+------------------+---+
-	|_c0                                          |_c1               |_c2               |id |
-	+---------------------------------------------+------------------+------------------+---+
-	|pcs                                          |222963.1299999999 |1098.3405418719205|0  |
-	|portateis_casa_forno_e_cafe                  |47445.71000000001 |624.2856578947369 |1  |
-	|eletrodomesticos_2                           |113317.73999999995|476.12495798319304|2  |
-	|agro_industria_e_comercio                    |72530.46999999997 |342.1248584905659 |3  |
-	|instrumentos_musicais                        |191498.87999999884|281.6159999999983 |4  |
-	|eletroportateis                              |190648.57999999973|280.7784683357875 |5  |
-	|portateis_cozinha_e_preparadores_de_alimentos|3968.53           |264.5686666666667 |6  |
-	|telefonia_fixa                               |59583.000000000044|225.69318181818198|7  |
-	|construcao_ferramentas_seguranca             |40544.52000000007 |208.99237113402097|8  |
-	|relogios_presentes                           |1205005.6799999864|201.1359839759617 |9  |
-	+---------------------------------------------+------------------+------------------+---+
-	only showing top 10 rows
-    ```
+```
++---------------------------------------------+------------------+------------------+---+
+|_c0                                          |_c1               |_c2               |id |
++---------------------------------------------+------------------+------------------+---+
+|pcs                                          |222963.1299999999 |1098.3405418719205|0  |
+|portateis_casa_forno_e_cafe                  |47445.71000000001 |624.2856578947369 |1  |
+|eletrodomesticos_2                           |113317.73999999995|476.12495798319304|2  |
+|agro_industria_e_comercio                    |72530.46999999997 |342.1248584905659 |3  |
+|instrumentos_musicais                        |191498.87999999884|281.6159999999983 |4  |
+|eletroportateis                              |190648.57999999973|280.7784683357875 |5  |
+|portateis_cozinha_e_preparadores_de_alimentos|3968.53           |264.5686666666667 |6  |
+|telefonia_fixa                               |59583.000000000044|225.69318181818198|7  |
+|construcao_ferramentas_seguranca             |40544.52000000007 |208.99237113402097|8  |
+|relogios_presentes                           |1205005.6799999864|201.1359839759617 |9  |
++---------------------------------------------+------------------+------------------+---+
+only showing top 10 rows
+```
 
 3. 위 데이터를 Spark MLlib K-means API에서 처리 가능한 데이터로 변환합니다.
 변환한 데이터를 S3에 다시 저장합니다.
 
-    ```python
-	%spark.pyspark
-	# 각 피쳐를 지정합니다. 카테고리의 sum과 avg를 피쳐로 사용합니다.
-	data = data.withColumn('f1', concat(lit('1:'),col('sum')))
-	data = data.withColumn('f2', concat(lit('2:'),col('avg')))
+```python
+%spark.pyspark
+# 각 피쳐를 지정합니다. 카테고리의 sum과 avg를 피쳐로 사용합니다.
+data = data.withColumn('f1', concat(lit('1:'),col('sum')))
+data = data.withColumn('f2', concat(lit('2:'),col('avg')))
 
-	# input data로 필요없는 컬럼은 제외하고 S3에 저장합니다.
-	data = data.drop('category').drop('sum').drop('avg')
-	data.repartition(1) \
-	    .write.mode('overwrite') \
-	    .option("sep"," ") \
-	    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/input_clustering/")
-    ```
+# input data로 필요없는 컬럼은 제외하고 S3에 저장합니다.
+data = data.drop('category').drop('sum').drop('avg')
+data.repartition(1) \
+    .write.mode('overwrite') \
+    .option("sep"," ") \
+    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/input_clustering/")
+```
 
 4. K-means로 데이터를 클러스터링합니다.
 아래 코드는 [Spark MLlib K-means](https://spark.apache.org/docs/latest/ml-clustering.html#k-means)에서 example 코드를 가져왔습니다.
 
-    ```python
-	%spark.pyspark
-	from pyspark.ml.clustering import KMeans
-	from pyspark.ml.evaluation import ClusteringEvaluator
+```python
+%spark.pyspark
+from pyspark.ml.clustering import KMeans
+from pyspark.ml.evaluation import ClusteringEvaluator
 
-	# 앞서 저장한 데이터를 불러옵니다.
-	dataset = spark.read.format("libsvm").load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/input_clustering/")
+# 앞서 저장한 데이터를 불러옵니다.
+dataset = spark.read.format("libsvm").load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/input_clustering/")
 
-	# Trains a k-means model.
-	kmeans = KMeans().setK(5).setSeed(1)
-	model = kmeans.fit(dataset)
+# Trains a k-means model.
+kmeans = KMeans().setK(5).setSeed(1)
+model = kmeans.fit(dataset)
 
-	# Make predictions
-	predictions = model.transform(dataset)
+# Make predictions
+predictions = model.transform(dataset)
 
-	# Evaluate clustering by computing Silhouette score
-	evaluator = ClusteringEvaluator()
+# Evaluate clustering by computing Silhouette score
+evaluator = ClusteringEvaluator()
 
-	silhouette = evaluator.evaluate(predictions)
-	print("Silhouette with squared euclidean distance = " + str(silhouette))
+silhouette = evaluator.evaluate(predictions)
+print("Silhouette with squared euclidean distance = " + str(silhouette))
 
-	# Shows the result.
-	centers = model.clusterCenters()
-	print("Cluster Centers: ")
-	for center in centers:
-	    print(center)
-    ```
+# Shows the result.
+centers = model.clusterCenters()
+print("Cluster Centers: ")
+for center in centers:
+    print(center)
+```
 
 5. 결과물을 저장합니다.
 
-    ```python
-	%spark.pyspark
+```python
+%spark.pyspark
 
-	# 추후 데이터 시각화에서 사용하기 위해 데이터를 저장합니다.
-	predictions.drop('features').repartition(1) \
-	    .write.mode('overwrite') \
-	    .option("sep","\t") \
-	    .option("header","true") \
-	    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/output_clustering/")
-    ```
+# 추후 데이터 시각화에서 사용하기 위해 데이터를 저장합니다.
+predictions.drop('features').repartition(1) \
+    .write.mode('overwrite') \
+    .option("sep","\t") \
+    .option("header","true") \
+    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/output_clustering/")
+```
 
 # Pandas & Matplotlib
 ---
@@ -205,62 +204,62 @@ sudo pip install matplotlib
 
 1. Zeppelin에서 아래 내용을 참고하여 새 노트북을 생성합니다.
 
-	```
-	Note Name: data-visualization
-	Default Interpreter: python
-	```
+```
+Note Name: data-visualization
+Default Interpreter: python
+```
 
 2. spark를 이용하여 데이터를 읽어옵니다.
 
-    ```python
-	%spark.pyspark
-	org = spark.read.format('com.databricks.spark.csv') \
-	    .options(header='true', inferschema='true') \
-	    .option("delimiter", "\t") \
-	    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/org_clustering/") \
-	    .cache()
-	    
-	output = spark.read.format('com.databricks.spark.csv') \
-	    .options(header='true', inferschema='true') \
-	    .option("delimiter", "\t") \
-	    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/output_clustering/") \
-	    .cache()
-    ```
+```python
+%spark.pyspark
+org = spark.read.format('com.databricks.spark.csv') \
+    .options(header='true', inferschema='true') \
+    .option("delimiter", "\t") \
+    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/org_clustering/") \
+    .cache()
+    
+output = spark.read.format('com.databricks.spark.csv') \
+    .options(header='true', inferschema='true') \
+    .option("delimiter", "\t") \
+    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/output_clustering/") \
+    .cache()
+```
 
 3. 가져온 두 테이블을 조인하고 데이터를 확인합니다.
 
-    ```python
-	%spark.pyspark
-	data = org.join(output, org.label == output.label, how='inner')
-	data.show()
-    ```
+```python
+%spark.pyspark
+data = org.join(output, org.label == output.label, how='inner')
+data.show()
+```
 
 4. 그래프를 그리기 위해 Pandas와 Matplotlib를 import 합니다.
 
-    ```python
-	%spark.pyspark
-	import matplotlib.pyplot as plt
-	import pandas as pd
-	import numpy as np
-	pd.set_option('display.max_rows', 20)
-	pd.set_option('display.max_columns', 10)
-	pd.set_option('display.width', 1000)
+```python
+%spark.pyspark
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+pd.set_option('display.max_rows', 20)
+pd.set_option('display.max_columns', 10)
+pd.set_option('display.width', 1000)
 
-	pd_df = data.selectExpr('category','sum','avg','prediction').toPandas()
-	pd_df = pd_df.sort_values(by=['sum'])
-    ```
+pd_df = data.selectExpr('category','sum','avg','prediction').toPandas()
+pd_df = pd_df.sort_values(by=['sum'])
+```
 
 5. 그래프를 그립니다. 하나의 셀에 하나의 그래프를 그립니다
 
-    ```python
-	%spark.pyspark
-	ax1 = pd_df.plot.line(x='sum', y='avg')
-    ```
+```python
+%spark.pyspark
+ax1 = pd_df.plot.line(x='sum', y='avg')
+```
 
-    ```python
-	%spark.pyspark
-	ax2 = pd_df.plot.scatter(x='sum', y='avg', c='prediction', colormap='viridis')
-    ```
+```python
+%spark.pyspark
+ax2 = pd_df.plot.scatter(x='sum', y='avg', c='prediction', colormap='viridis')
+```
 
 6. 아래와 같이 셀의 크기를 조절하여 보기 쉽게 편집할 수 있습니다.
 
