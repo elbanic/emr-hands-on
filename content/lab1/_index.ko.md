@@ -242,57 +242,57 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 우리는 실제 데이터가 없기 때문에 임의의 데이터를 만들 것입니다. 아래의 소스코드는 임의의 아파치 로그 형태의 데이터를 생성하여 지속적으로 파일을 만듭니다.
 
-연결된 EC2 인스턴스에서 아래와 같이 편집창을 열고 *gen-apache-log.py* 파일을 생성합니다.
+1. 연결된 EC2 인스턴스에서 아래와 같이 편집창을 열고 *gen-apache-log.py* 파일을 생성합니다.
 
-```
-cd ~
-vi gen-apache-log.py
-```
+    ```sh
+    cd ~
+    vi gen-apache-log.py
+    ```
 
-소스코드를 입력하고 :wq를 입력하여 파일을 저장합니다.
+2. 소스코드를 입력하고 :wq를 입력하여 파일을 저장합니다.
 
-```
-import random
-import time
-import json
-import datetime
+    ```python
+    import random
+    import time
+    import json
+    import datetime
 
-responses = [
-    "200", "200", "200", "200", "200", "200", "200", "200", "200", "403"
-]
+    responses = [
+        "200", "200", "200", "200", "200", "200", "200", "200", "200", "403"
+    ]
 
-f_requests = open('requests_string.txt', 'rb')
-requests = f_requests.readlines()
-f_requests.close()
+    f_requests = open('requests_string.txt', 'rb')
+    requests = f_requests.readlines()
+    f_requests.close()
 
-inc = 0
-while True:
-    f = open("/tmp/app.log%s" % inc, 'wb')
-    for i in range(0, 10000):
-        ip = "%s.%s.%s.%s" % (random.randint(1, 255), random.randint(0, 255), \
-            random.randint(0, 255), random.randint(1, 255))
-        request = random.choice(requests).replace("\n", "")
-        response = random.choice(responses)
-        now = datetime.datetime.now()
-        timestamp = now.strftime("%d/%b/%Y:%H:%M:%S")
-        form = """%s - - [%s] "GET %s HTTP/1.0" %s %s\n"""
-        f.write(form % (ip, timestamp, request, response, random.randint(4, 10000)))
-        time.sleep(0.01)
-    f.close()
-    inc += 1
-```
+    inc = 0
+    while True:
+        f = open("/tmp/app.log%s" % inc, 'wb')
+        for i in range(0, 10000):
+            ip = "%s.%s.%s.%s" % (random.randint(1, 255), random.randint(0, 255), \
+                random.randint(0, 255), random.randint(1, 255))
+            request = random.choice(requests).replace("\n", "")
+            response = random.choice(responses)
+            now = datetime.datetime.now()
+            timestamp = now.strftime("%d/%b/%Y:%H:%M:%S")
+            form = """%s - - [%s] "GET %s HTTP/1.0" %s %s\n"""
+            f.write(form % (ip, timestamp, request, response, random.randint(4, 10000)))
+            time.sleep(0.01)
+        f.close()
+        inc += 1
+    ```
 
-아래 파일을 다운로드합니다.
+3. 아래 파일을 다운로드합니다.
 
-```
-aws s3 cp s3://public-access-sample-code/requests_string.txt ~/
-```
+    ```sh
+    aws s3 cp s3://public-access-sample-code/requests_string.txt ~/
+    ```
 
-파일을 실행합니다.
+4. 파일을 실행합니다.
 
-```
-python gen-apache-log.py
-```
+    ```sh
+    python gen-apache-log.py
+    ```
 
 # 데이터 확인하기<a name="데이터 확인하기"></a>
 ---

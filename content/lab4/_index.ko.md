@@ -66,9 +66,9 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 	```
 	
 # Spark MLlib<a name="Spark_Llib"></a>
-	---
+---
 
-> 여기서는 K-means 알고리즘을 이용하여 Category를 분류(클러스터링)할 것입니다.
+여기서는 K-means 알고리즘을 이용하여 Category를 분류(클러스터링)할 것입니다.
 우리는 앞서서 카테고리별 판매 금액 총액과 평균 금액인, `category_price_sum_avg` 데이터를 미리 뽑아두었습니다.
 총액과 평균 금액을 클러스터링에 적절한 feature라고 볼 수는 없지만 Spark MLlib의 간단한 실습으로는 부족하지 않습니다.
 라이브러리 사용법은 [Spark MLlib K-means](https://spark.apache.org/docs/latest/ml-clustering.html#k-means)를 참조해 주시기 바랍니다.
