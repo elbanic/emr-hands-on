@@ -226,6 +226,8 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 * PySpark는 프로그래밍이 가능하여 제한적인 SQL보다 더 다양하고 복잡한 작업을 가능하게 합니다. 여기서는 Kinesis에서 저장한 log의 의미있는 부분만 추출하여 저장합니다. 
 
 ```python
+    import pyspark.sql.functions
+
     # 파티션드 데이터 로딩 2020/03/*/* 하면 3월 데이터 모두, 2020/03/02/* 하면 3월 2일 데이터 모두
     log_raw = spark.read.format('com.databricks.spark.csv') \
         .options(header='false', inferschema='true') \
@@ -262,7 +264,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
     customer = spark.read.format('com.databricks.spark.csv') \
         .options(header='true', inferschema='true') \
         .option("delimiter", ",") \
-        .load("s3://id-emr-lab-data-20200306/brazilian-ecommerce/olist_customers_dataset.csv") \
+        .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/customer/") \
         .cache()
     
     customer_total_purchase = spark.read.format('com.databricks.spark.csv') \

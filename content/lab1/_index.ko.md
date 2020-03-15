@@ -282,6 +282,7 @@ while True:
     inc += 1
 ```
 
+아래 파일을 다운로드합니다.
 
 ```
 aws s3 cp s3://public-access-sample-code/requests_string.txt ~/
