@@ -114,7 +114,7 @@ Hive와 Spark를 실행하기 위해 Master Node에 연결합니다.
 EC2 인스턴스에 연결하는 것과 동일합니다. EMR_PUBLIC_DNS는 EMR 클러스터의 **Master public DNS**입니다. user name에 **hadoop**을 작성하는 것에 유의하십시오.
 
 ```
-    ssh -i key_file.pem hadoop@EMR_PUBLIC_DNS
+ssh -i key_file.pem hadoop@EMR_PUBLIC_DNS
 ```
 
 정상적으로 연결되면 아래와 같은 화면이 보입니다.
@@ -134,7 +134,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 * HDFS에 저장된 데이터를 Hive로 가지고 와서 테이블을 생성합니다.
 
-```
+```sql
     CREATE EXTERNAL TABLE IF NOT EXISTS orders (
       order_id                   STRING,
       order_item_id              STRING,
@@ -180,7 +180,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 * Product Category별 구매 금액 Sum, Avg을 구하고 저장하는 쿼리를 작성합니다.
 
-```
+```sql
     CREATE TABLE IF NOT EXISTS category_price_sum_avg AS
     SELECT P.product_category_name, SUM(O.price) AS sum_price, AVG(O.price) AS avg_price
     FROM orders O
@@ -197,7 +197,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 * 각 User별 구매 금액 Sum을 구하고 저장하는 쿼리를 작성합니다.
 
-```
+```sql
     CREATE TABLE IF NOT EXISTS customer_total_purchase AS
     SELECT I.customer_id, SUM(O.price) AS sum_purchase
     FROM orders O
@@ -225,7 +225,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 * PySpark는 프로그래밍이 가능하여 제한적인 SQL보다 더 다양하고 복잡한 작업을 가능하게 합니다. 여기서는 Kinesis에서 저장한 log의 의미있는 부분만 추출하여 저장합니다. 
 
-```
+```python
     # 파티션드 데이터 로딩 2020/03/*/* 하면 3월 데이터 모두, 2020/03/02/* 하면 3월 2일 데이터 모두
     log_raw = spark.read.format('com.databricks.spark.csv') \
         .options(header='false', inferschema='true') \
@@ -258,7 +258,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 
 * SQL 형태의 분석도 가능합니다. 앞서 Hive에서 추출한 데이터로부터 도시별 구매 금액과 평균과 합계를 확인합니다.
 
-```
+```python
     customer = spark.read.format('com.databricks.spark.csv') \
         .options(header='true', inferschema='true') \
         .option("delimiter", ",") \
