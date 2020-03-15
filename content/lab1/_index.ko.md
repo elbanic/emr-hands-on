@@ -266,9 +266,7 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 3. 아래 파일을 다운로드합니다.
 
-    ```sh
-    aws s3 cp s3://public-access-sample-code/requests_string.txt ~/
-    ```
+    [requests_string.txt](https://github.com/elbanic/test/blob/master/requests_string.txt)
 
 4. 파일을 실행합니다.
 
