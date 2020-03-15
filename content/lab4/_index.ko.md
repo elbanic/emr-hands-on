@@ -62,7 +62,7 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
     ![img](./images/lab4_pic4.png)
 ---
 
-```
+```text
 Note Name: ecommerce-clustering
 Default Interpreter: python
 ```
@@ -204,7 +204,7 @@ sudo pip install matplotlib
 
 1. Zeppelin에서 아래 내용을 참고하여 새 노트북을 생성합니다.
 
-```
+```text
 Note Name: data-visualization
 Default Interpreter: python
 ```
