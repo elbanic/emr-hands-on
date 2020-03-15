@@ -57,7 +57,7 @@ aws s3 cp brazilian-ecommerce/olist_order_items_dataset.csv s3://id-emr-lab-data
 aws s3 cp brazilian-ecommerce/olist_orders_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/
 ```
   
-실습에서 사용한 데이터가 준비되었습니다.
+실습에서 사용할 데이터가 준비되었습니다.
 
 
 # 클러스터 생성<a name="클러스터 생성"></a>
