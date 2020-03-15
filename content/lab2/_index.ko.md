@@ -17,7 +17,7 @@ pre: "<b>2. </b>"
 1. 사전 준비
 2. 클러스터 생성
 3. Analysis
-4. Auto-Scaling
+4. Auto Scaling
 
 
 # 사전 준비<a name="사전 준비"></a>
@@ -226,7 +226,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 * PySpark는 프로그래밍이 가능하여 제한적인 SQL보다 더 다양하고 복잡한 작업을 가능하게 합니다. 여기서는 Kinesis에서 저장한 log의 의미있는 부분만 추출하여 저장합니다. 
 
 ```python
-    import pyspark.sql.functions
+    import pyspark.sql.functions as f
 
     # 파티션드 데이터 로딩 2020/03/*/* 하면 3월 데이터 모두, 2020/03/02/* 하면 3월 2일 데이터 모두
     log_raw = spark.read.format('com.databricks.spark.csv') \
@@ -235,7 +235,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
         .load("s3://emr-lab-20200224/2020/03/*/*") \
         .cache()
     
-    splitter = pyspark.sql.functions.split(log_raw['_c0'], ' - - |\"')
+    splitter = f.split(log_raw['_c0'], ' - - |\"')
     log_raw = log_raw.withColumn('ip', splitter.getItem(0))
     log_raw = log_raw.withColumn('timestamp', splitter.getItem(1))
     log_raw = log_raw.withColumn('request', splitter.getItem(2))
@@ -261,6 +261,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 * SQL 형태의 분석도 가능합니다. 앞서 Hive에서 추출한 데이터로부터 도시별 구매 금액과 평균과 합계를 확인합니다.
 
 ```python
+    import pyspark.sql.functions as f
     customer = spark.read.format('com.databricks.spark.csv') \
         .options(header='true', inferschema='true') \
         .option("delimiter", ",") \
@@ -288,7 +289,7 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 ```
 
 
-# EMR Core node Auto Scaling<a name="EMR Core node Auto Scaling"></a>
+# EMR Auto Scaling<a name="EMR Auto Scaling"></a>
 ---
 
 이번 단계에서는 분석 작업이 많아졌을 때 클러스터를 자동으로 확장하는 방법에 대해 배워봅니다.
@@ -299,29 +300,28 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 4. Hardware 탭을 선택합니다.
 5. Auto Scaling 탭의 Not enabled 옆의 수정 아이콘을 클릭합니다.
 
-    ![img](./images/lab2_pic18.png)
+  ![img](./images/lab2_pic18.png)
 ---
 
 6. 아래 스크린샷을 참고하여 값을 채워 넣습니다. 모든 값이 정확하게 입력되었는지 확인한 후 Modify를 클릭하여 적용합니다. 
 
-    ![img](./images/lab2_pic19.png)
+  ![img](./images/lab2_pic19.png)
 ---
 
-  * Scale out
-    * YARNMemoryAvailablePercentage가 20보다 작은 현상이 5분 간격으로 3번 관찰되었을 때 2개의 인스턴스를 추가합니다.
-    * ContainerPendingRatio가 0.75보다 큰 현상이 5분 간격으로 3번 관찰되었을 때 2개의 인스턴스를 추가합니다.
+* Scale out
+  * YARNMemoryAvailablePercentage가 20보다 작은 현상이 5분 간격으로 3번 관찰되었을 때 2개의 인스턴스를 추가합니다.
+  * ContainerPendingRatio가 0.75보다 큰 현상이 5분 간격으로 3번 관찰되었을 때 2개의 인스턴스를 추가합니다.
 
-  * Scale in
-    * YARNMemoryAvailablePercentage가 85보다 큰 현상이 5분 간격으로 3번 관찰되었을 때 1개의 인스턴스를 종료합니다.
+* Scale in
+  * YARNMemoryAvailablePercentage가 85보다 큰 현상이 5분 간격으로 3번 관찰되었을 때 1개의 인스턴스를 종료합니다.
 
-  * YARNMemoryAvailablePercentage와 ContainerPendingRatio는 아래 설명을 참조하십시오.
-    * YarnMemoryAvailablePercentage: YARN에서 사용할 수 있는 잔여 메모리 비율입니다.
-    * ContainerPendingRatio: 대기 중인 컨테이너/할당된 컨테이너 입니다. 이 측정치를 사용하여 다양한 로드에 대한 할당 컨테이너 동작을 기반으로 클러스터를 조정할 수 있으며, 이는 성능 튜닝에 유용합니다.
+* YARNMemoryAvailablePercentage와 ContainerPendingRatio는 아래 설명을 참조하십시오.
+  * YarnMemoryAvailablePercentage: YARN에서 사용할 수 있는 잔여 메모리 비율입니다.
+  * ContainerPendingRatio: 대기 중인 컨테이너/할당된 컨테이너 입니다. 이 측정치를 사용하여 다양한 로드에 대한 할당 컨테이너 동작을 기반으로 클러스터를 조정할 수 있으며, 이는 성능 튜닝에 유용합니다.
 
 7. Auto Scaling 상태가 Pending에서 Attached가 될 때까지 기다립니다.
 
-
-![img](./images/lab2_pic20.png)
+  ![img](./images/lab2_pic20.png)
 ---
 
 8. 앞서 실험한 분석 예시를 여러 개의 쉘을 띄우고 동시에 실행해 봅니다. 여러 개의 분석 작업이 동시에 실행되면 YARN에서 사용할 수 있는 잔여 메모리의 비율이 감소하고, 대기 중인 컨테이너가 증가하여, 오토 스케일링 기능이 동작하는 것을 확인할 수 있습니다.
