@@ -181,7 +181,6 @@ sudo yum install –y https://s3.amazonaws.com/streaming-data-agent/aws-kinesis-
 ```
 
 
-
 ## 에이전트 구성 및 시작
 
 구성 파일(/etc/aws-kinesis/agent.json)을 열고 편집합니다(기본 파일 액세스 권한을 사용하는 경우 수퍼유저로).
@@ -194,32 +193,33 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 1. `vi /etc/aws-kinesis/agent.json` 명령어로 구성 파일을 열고 아래와 같이 수정합니다.
 
-```json
-{
-  "cloudwatch.emitMetrics": true,
-  "kinesis.endpoint": "",
-  "firehose.endpoint": "firehose.ap-northeast-2.amazonaws.com",
-
-  "flows": [
+    ```json
     {
-      "filePattern": "/tmp/app.log*",
-      "deliveryStream": "emr-lab-delivery-stream"
+      "cloudwatch.emitMetrics": true,
+      "kinesis.endpoint": "",
+      "firehose.endpoint": "firehose.ap-northeast-2.amazonaws.com",
+
+      "flows": [
+        {
+          "filePattern": "/tmp/app.log*",
+          "deliveryStream": "emr-lab-delivery-stream"
+        }
+      ]
     }
-  ]
-}
-```
+    ```
 
 2. 에이전트를 수동으로 시작합니다.
 
-```sh
-sudo service aws-kinesis-agent start
-```
+    ```sh
+    sudo service aws-kinesis-agent start
+    ```
 
 3. (필요하면) 시스템 시작 시 에이전트가 시작되도록 구성합니다.
 
-```sh
-sudo chkconfig aws-kinesis-agent on
-```
+    ```sh
+    sudo chkconfig aws-kinesis-agent on
+    ```
+
 
 ## 데이터 생성하기<a name="데이터 생성하기"></a>
 
@@ -227,53 +227,53 @@ sudo chkconfig aws-kinesis-agent on
 
 1. 연결된 EC2 인스턴스에서 아래와 같이 편집창을 열고 *gen-apache-log.py* 파일을 생성합니다.
 
-```sh
-cd ~
-vi gen-apache-log.py
-```
+    ```sh
+    cd ~
+    vi gen-apache-log.py
+    ```
 
 2. 소스코드를 입력하고 :wq를 입력하여 파일을 저장합니다.
 
-```python
-import random
-import time
-import json
-import datetime
+    ```python
+    import random
+    import time
+    import json
+    import datetime
 
-responses = [
-    "200", "200", "200", "200", "200", "200", "200", "200", "200", "403"
-]
+    responses = [
+        "200", "200", "200", "200", "200", "200", "200", "200", "200", "403"
+    ]
 
-f_requests = open('requests_string.txt', 'rb')
-requests = f_requests.readlines()
-f_requests.close()
+    f_requests = open('requests_string.txt', 'rb')
+    requests = f_requests.readlines()
+    f_requests.close()
 
-inc = 0
-while True:
-    f = open("/tmp/app.log%s" % inc, 'wb')
-    for i in range(0, 10000):
-        ip = "%s.%s.%s.%s" % (random.randint(1, 255), random.randint(0, 255), \
-            random.randint(0, 255), random.randint(1, 255))
-        request = random.choice(requests).replace("\n", "")
-        response = random.choice(responses)
-        now = datetime.datetime.now()
-        timestamp = now.strftime("%d/%b/%Y:%H:%M:%S")
-        form = """%s - - [%s] "GET %s HTTP/1.0" %s %s\n"""
-        f.write(form % (ip, timestamp, request, response, random.randint(4, 10000)))
-        time.sleep(0.01)
-    f.close()
-    inc += 1
-```
+    inc = 0
+    while True:
+        f = open("/tmp/app.log%s" % inc, 'wb')
+        for i in range(0, 10000):
+            ip = "%s.%s.%s.%s" % (random.randint(1, 255), random.randint(0, 255), \
+                random.randint(0, 255), random.randint(1, 255))
+            request = random.choice(requests).replace("\n", "")
+            response = random.choice(responses)
+            now = datetime.datetime.now()
+            timestamp = now.strftime("%d/%b/%Y:%H:%M:%S")
+            form = """%s - - [%s] "GET %s HTTP/1.0" %s %s\n"""
+            f.write(form % (ip, timestamp, request, response, random.randint(4, 10000)))
+            time.sleep(0.01)
+        f.close()
+        inc += 1
+    ```
 
 3. 아래 파일을 다운로드합니다.
 
-[requests_string.txt](https://github.com/elbanic/test/blob/master/requests_string.txt)
+    [requests_string.txt](https://github.com/elbanic/test/blob/master/requests_string.txt)
 
 4. 파일을 실행합니다.
 
-```sh
-python gen-apache-log.py
-```
+    ```sh
+    python gen-apache-log.py
+    ```
 
 # 데이터 확인하기<a name="데이터 확인하기"></a>
 ---
