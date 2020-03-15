@@ -46,7 +46,6 @@ pre: "<b>2. </b>"
     [Download](https://www.kaggle.com/olistbr/brazilian-ecommerce/download)
 
 
-
 2. 파일 다운로드가 완료되면 압축을 풀고 이전에 생성한 S3의 버킷에 업로드합니다.
 실습에서는 order, order_info, product, customer 데이터만 사용할 것입니다.
 또한 Hive는 directory 단위로 데이터를 읽습니다. 따라서 각 directory의 역할을 할 수 있도록 prefix를 추가합니다.
@@ -72,33 +71,27 @@ pre: "<b>2. </b>"
 4. 페이지 상단에 Go to advanced options를 클릭합니다.
 
     ![img](./images/lab2_pic1.png)
-    ---
 
 5. Release에 emr 최신 버전을 선택하고, Hive와 Spark를 사용할 것이므로, 기본 선택된 Hadoop와 Hive, Spark, Tez를 선택합니다. 
 Lab 4에서 사용할 예정인 Zeppelin도 미리 설치합니다. Next를 눌러 다음 단계로 넘어갑니다.
 
     ![img](./images/lab2_pic2.png)
-    ---
 
 6. 이번 실습에서는 Core 노드만 사용합니다. 나머진 그대로 두고, Core 노드에 인스턴스 수를 2로 두고, Task 노드를 X 표시를 눌러 삭제합니다. Core와 Task 노드의 차이는 이 링크를 눌러 확인하시기 바랍니다. [Understanding Master, Core, and Task Nodes](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-master-core-task-nodes.html). Next를 눌러 다음 단계로 넘어갑니다.
 
     ![img](./images/lab2_pic3.png)
-    ---
 
 7. 클러스터 이름을 `EMR-lab-adhoc-20200306` 으로 넣고 Logging과 Debugging 옵션을 켭니다. Termination protection은 선택 해제 후 Next 를 눌러 다음 단계로 넘어갑니다.
 
     ![img](./images/lab2_pic4.png)
-    ---
 
 8. EC2 key pair에 인스턴스에 접속할 key pair를 선택한 후 Create cluster를 선택하여 클러스터를 생성합니다.
 
     ![img](./images/lab2_pic5.png)
-    ---
 
 9. 7분 정도 후에 클러스터의 마스터와 Core 노드의 상태가 Running으로 변경될 때까지 기다립니다.
 
     ![img](./images/lab2_pic6.png)
-    ---
 
 실습에서 사용할 클러스터의 생성이 완료되었습니다.
 	
@@ -304,12 +297,10 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 5. Auto Scaling 탭의 Not enabled 옆의 수정 아이콘을 클릭합니다.
 
     ![img](./images/lab2_pic18.png)
-    ---
 
 6. 아래 스크린샷을 참고하여 값을 채워 넣습니다. 모든 값이 정확하게 입력되었는지 확인한 후 Modify를 클릭하여 적용합니다. 
 
     ![img](./images/lab2_pic19.png)
-    ---
 
     * Scale out
         * YARNMemoryAvailablePercentage가 20보다 작은 현상이 5분 간격으로 3번 관찰되었을 때 2개의 인스턴스를 추가합니다.
@@ -325,7 +316,6 @@ Hive를 이용하여 SQL과 같은 분석 쿼리를 실습할 수 있습니다.
 7. Auto Scaling 상태가 Pending에서 Attached가 될 때까지 기다립니다.
 
     ![img](./images/lab2_pic20.png)
-    ---
 
 8. 앞서 실험한 분석 예시를 여러 개의 쉘을 띄우고 동시에 실행해 봅니다. 여러 개의 분석 작업이 동시에 실행되면 YARN에서 사용할 수 있는 잔여 메모리의 비율이 감소하고, 대기 중인 컨테이너가 증가하여, 오토 스케일링 기능이 동작하는 것을 확인할 수 있습니다.
 

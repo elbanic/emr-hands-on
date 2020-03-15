@@ -37,32 +37,26 @@ pre: "<b>1. </b>"
 3. 역할 만들기를 선택합니다.
 
     ![img](./images/lab1_pic1.png)
----
 
 4. EC2를 선택합니다.
 
     ![img](./images/lab1_pic2.png)
----
 
 5. 정책 선택에서 `AmazonS3FullAccess`와 `AmazonKinesisFirehoseFullAccess`를 선택하여 권한을 부여합니다. 
 
     ![img](./images/lab1_pic3.png)
----
 
     ![img](./images/lab1_pic4.png)
----
+
 
 6. 태그를 추가하지 않고 다음을 클릭하여 다음 단계로 넘어갑니다. 
 7. 역할 이름에 `emrlabs-ec2-kinesis-role`를 입력하고 역할 만들기를 클합니다.
 
     ![img](./images/lab1_pic5.png)
----
 
 8. EC2에서 S3와 Kinesis Firehose로 접근할 수 있는 역할이 생성되었습니다.
 
     ![img](./images/lab1_pic6.png)
----
-
 
 ## Kinesis Firehose에서 S3 접근 권한
 
@@ -73,26 +67,22 @@ Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니�
 3. 역할 만들기를 선택합니다.
 
     ![img](./images/lab1_pic7.png)
----
 
 4. Kinesis Firehose를 선택합니다.
 
     ![img](./images/lab1_pic8.png)
----
+
     ![img](./images/lab1_pic9.png)
----
 
 5. 정책 선택에서 아무것도 선택하지 않고 다음을 클릭하여 다음 단계로 넘어갑니다.
 6. 태그를 추가하지 않고 다음을 클릭하여 다음 단계로 넘어갑니다. 
 7. 역할 이름에 `firehose_delivery_role`를 입력하고 역할 만들기를 클합니다.
 
     ![img](./images/lab1_pic10.png)
----
 
 8. Firehose에서 다른 서비스로 접근을 제어할 수 있는 역할이 생성되었습니다.
 
     ![img](./images/lab1_pic11.png)
----
 
 ## Security Group
 
@@ -103,12 +93,10 @@ Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니�
 3. 보안 그룹 생성을 클릭합니다.
 
     ![img](./images/lab1_pic12.png)
----
 
 4. `emr-lab-sg`을 입력합니다. VPC는 기본값을 선택합니다.
 
     ![img](./images/lab1_pic13.png)
----
 
 
 # Kinesis Firehose delivery streams<a name="Kinesis Firehose delivery streams"></a>
@@ -122,29 +110,25 @@ Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니�
 4. 딜리버리 스트림의 이름을 `emr-lab-delivery-stream`으로 입력합니다.
 
     ![img](./images/lab1_pic14.png)
----
 
 5. Data transformation과 Record format conversion은 `Disabled`로 둡니다
 
     ![img](./images/lab1_pic15.png)
----
 
 6. Destination을 Amazon S3로 지정합니다. 버킷명은 Create new를 통해 `id-emr-lab-20200306`로 새로 생성합니다.
 
     ![img](./images/lab1_pic16.png)
----
 
 7. 아래 화면을 참고하여 모든 값을 채워넣습니다. Permissions 탭에서 create new or choose를 클릭하여 사전 준비 단계에서 만들었던 firehose_delivery_role에 권한을 부여합니다.  
 
     ![img](./images/lab1_pic17.png)
----
+
     ![img](./images/lab1_pic18.png)
----
 
 8. 최종 확인 후 delivery stream을 생성합니다.
 
     ![img](./images/lab1_pic19.png)
----
+
 
 ## Kinesis Agent 설치하기
 
@@ -168,18 +152,16 @@ EC2에서 Kinesis Firehose delivery stream에 접근하기 위해서는 사전 �
 2. 좌측 상단의 버튼 메뉴에서 작업 -> 인스턴스 설정 -> IAM 역할 연결을 선택합니다.
 
     ![img](./images/lab1_pic20.png)
----
 
 3. 사전 조건에서 생성한 역할 `emrlabs-ec2-kinesis-role` 선택합니다.
 
     ![img](./images/lab1_pic21.png)
----
 
 ## EC2에 에이전트 설치
 
 1. 앞서 생성한 인스턴스에 연결합니다. 아래 그림에서 EC2 인스턴스의 IPv4 퍼블릭 IP 또는 퍼블릭 DNS(IPv4)를 참고하여 아래 명령어의 PUBLIC_DNS 부분에 입력합니다.
 
-    ```
+    ```sh
     ssh -i key.pem ec2-user@PUBLIC_DNS
     ```
 
@@ -187,14 +169,14 @@ EC2에서 Kinesis Firehose delivery stream에 접근하기 위해서는 사전 �
 
 * Amazon Linux AMI를 이용해 에이전트를 설치하려면 다음 명령을 사용하여 에이전트를 다운로드하고 설치합니다.
 
-    ```
+    ```sh
     sudo yum update -y
     sudo yum install –y aws-kinesis-agent
     ```
 
 * Red Hat Enterprise Linux를 사용하여 에이전트를 설치하려면 다음 명령을 사용하여 에이전트를 다운로드하고 설치합니다.
 
-    ```
+    ```sh
     sudo yum install –y https://s3.amazonaws.com/streaming-data-agent/aws-kinesis-agent-latest.amz
     ```
 
@@ -211,7 +193,7 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 1. `vi /etc/aws-kinesis/agent.json` 명령어로 구성 파일을 열고 아래와 같이 수정합니다.
 
-    ```
+    ```json
     {
       "cloudwatch.emitMetrics": true,
       "kinesis.endpoint": "",
@@ -228,13 +210,13 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 2. 에이전트를 수동으로 시작합니다.
 
-    ```
+    ```sh
     sudo service aws-kinesis-agent start
     ```
 
 3. (필요하면) 시스템 시작 시 에이전트가 시작되도록 구성합니다.
 
-    ```
+    ```sh
     sudo chkconfig aws-kinesis-agent on
     ```
 

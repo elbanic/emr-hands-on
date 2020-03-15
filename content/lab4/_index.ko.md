@@ -43,22 +43,19 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 	[Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/)
 
     ![img](./images/lab4_pic1.png)
-	---
 
     ![img](./images/lab4_pic2.png)
-	---
 
 
 5. 링크가 활성화된 Zeppelin을 클릭하여 Zeppelin 페이지로 이동합니다.
 
     ![img](./images/lab4_pic3.png)
-	---
 
 
 6. 상단의 `Notebook`을 클릭하고 아래 내용을 참조하여 `Create new note`으로 노트북을 생성합니다.
 
     ![img](./images/lab4_pic4.png)
-	---
+
 
 	```
 	Note Name: ecommerce-clustering
@@ -262,7 +259,6 @@ sudo pip install matplotlib
 6. 아래와 같이 셀의 크기를 조절하여 보기 쉽게 편집할 수 있습니다.
 
     ![img](./images/lab4_pic6.png)
-	---
 
 
 <p align="center">

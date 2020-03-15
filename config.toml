@@ -1,5 +1,6 @@
 # baseURL 변경
-baseURL = "https://master.d394ihxjx9iyum.amplifyapp.com/"
+#baseURL = "https://master.d394ihxjx9iyum.amplifyapp.com/"
+baseURL = "emr-hands-on"
 languageCode = "ko-KR"
 defaultContentLanguage = "ko"
 
