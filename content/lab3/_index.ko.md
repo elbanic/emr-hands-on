@@ -85,8 +85,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
     ```
 
 2. PySpark에서 작업했던 코드를 python 스크립트로 만듭니다. `pyspark-process.py` 파일을 생성하여 아래의 코드를 입력합니다.
-
-    데이터 처리 코드는 동일하지만, Spark와 연결하기 위한 코드 몇줄이 추가되었습니다. 마찬가지로 입력, 출력 위치를 동적으로 바꿀 수 있도록 코드를 약간 수정합니다.
+데이터 처리 코드는 동일하지만, Spark와 연결하기 위한 코드 몇줄이 추가되었습니다. 마찬가지로 입력, 출력 위치를 동적으로 바꿀 수 있도록 코드를 약간 수정합니다.
 
     ```python
     import pyspark
@@ -127,7 +126,7 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
 3. 위 스크립트 파일들을 S3에 업로드합니다.
 파일을 적절한 버킷에 얿로드하거나, 버킷이 없으면 새로 생성하여 업로드합니다.
 
-    ```
+    ```sh
     aws s3 cp hive-process.q s3://bucketname/
     aws s3 cp pyspark-process.py s3://bucketname/
     ```
@@ -135,16 +134,18 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
 ## Steps 동작 테스트
 
 1. EMR 메인 페이지로 이동합니다. [link](https://ap-northeast-2.console.aws.amazon.com/elasticmapreduce/home?region=ap-northeast-2)
+
 2. Lab 2에서 생성했던 `EMR-lab-adhoc-20200306`를 선택합니다.
+
 3. Steps 탭으로 이동합니다. Add step을 클릭하여 스텝을 추가합니다.
 
     ![img](./images/lab3_pic1.png)
-
+---
 
 4. 아래 값을 참조하여 Hive program을 추가합니다.
 
     ![img](./images/lab3_pic2.png)
-
+---
 
     ```
     Step type: Hive program
@@ -159,12 +160,12 @@ Step을 추가하거나 하둡 작업을 마스터 노드에 대화형으로 제
 Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지 확인합니다.
 
     ![img](./images/lab3_pic3.png)
-
+---
 
 6. 이번에는 아래 값을 참조하여 PySpark 작업을 Step으로 추가합니다.
 
     ![img](./images/lab3_pic4.png)
-
+---
 
     ```
     Step type: Spark application
@@ -179,7 +180,7 @@ Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지
 Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지 확인합니다.
 
     ![img](./images/lab3_pic5.png)
-
+---
 
 # AWS CLI export<a name="AWS CLI"></a>
 ---
@@ -187,11 +188,13 @@ Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지
 앞서 작업한 Adhoc 분석용 클러스터와 동일한 설정의 클러스터를 만들 수 있습니다.
 
 1. EMR 메인 페이지로 이동합니다. [link](https://ap-northeast-2.console.aws.amazon.com/elasticmapreduce/home?region=ap-northeast-2)
+
 2. Adhoc Clusters를 선택합니다.
+
 3. AWS CLI export를 클릭합니다.
 
     ![img](./images/lab3_pic6.png)
-
+---
 
 4. 화면에 출력된 Cli 문자열을 복사하여 따로 저장해 둡니다. 아래와 같은 형태가 되어야 합니다. 이 CLI를 호출하면 동일한 설정의 클러스터가 생성됩니다. 
 Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.com/cli/latest/reference/emr/index.html) Reference 공식 문서를 참조해 주시기 바랍니다.
@@ -246,15 +249,20 @@ Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.co
 그러나 EC2 instance는 EMR 클러스터를 실행하기 위한 권한이 필요합니다. EC2 instance에 기존에 Attache한 IAM 롤을 이용하여 권한을 추가해야 합니다.
 
 1. IAM 페이지로 이동합니다. [link](https://console.aws.amazon.com/iam/home)
+
 2. 역할을 선택합니다. 
+
 3. 검색창에 `emrlabs-ec2-kinesis-role` 을 입력하여 emrlabs-ec2-kinesis-role을 선택합니다.
+
 4. Permission 탭에서 Attach policy를 클릭합니다.
 
     ![img](./images/lab3_pic7.png)
-    
+---
+
 5. 검색창에 ElasticMapReduce를 입력하여 `AmazonElasticMapReduceFullAccess` 선택하고 Attach를 클릭합니다.
 
     ![img](./images/lab3_pic8.png)
+---
 
 6. 이제 해당 EC2 instance에서 EMR API 권한이 부여되었습니다.
 
@@ -319,7 +327,7 @@ Parameter에 대한 자세한 설명은 [aws emr cli](https://docs.aws.amazon.co
       0  9  *  *  * ~/run_emr_cli.sh
     ```
 
-7. 매일 9시마다 앞서 작성했던 AWS Cli를 호출하는 프로그램 작성이 완료되었습니다.
+7. 매일 오전 9시마다 앞서 작성했던 AWS Cli를 호출하는 프로그램 작성이 완료되었습니다.
     
 
 <p align="center">
