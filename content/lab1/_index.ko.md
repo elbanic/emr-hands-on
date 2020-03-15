@@ -157,6 +157,7 @@ EC2에서 Kinesis Firehose delivery stream에 접근하기 위해서는 사전 �
 
     ![img](./images/lab1_pic21.png)
 
+
 ## EC2에 에이전트 설치
 
 1. 앞서 생성한 인스턴스에 연결합니다. 아래 그림에서 EC2 인스턴스의 IPv4 퍼블릭 IP 또는 퍼블릭 DNS(IPv4)를 참고하여 아래 명령어의 PUBLIC_DNS 부분에 입력합니다.
@@ -167,18 +168,18 @@ EC2에서 Kinesis Firehose delivery stream에 접근하기 위해서는 사전 �
 
 2. 다음으로, 다음 중 한 가지 방법을 사용하여 인스턴스를 설치합니다.
 
-    * Amazon Linux AMI를 이용해 에이전트를 설치하려면 다음 명령을 사용하여 에이전트를 다운로드하고 설치합니다.
+* Amazon Linux AMI를 이용해 에이전트를 설치하려면 다음 명령을 사용하여 에이전트를 다운로드하고 설치합니다.
 
-    ```sh
-    sudo yum update -y
-    sudo yum install –y aws-kinesis-agent
-    ```
+```sh
+sudo yum update -y
+sudo yum install –y aws-kinesis-agent
+```
 
-    * Red Hat Enterprise Linux를 사용하여 에이전트를 설치하려면 다음 명령을 사용하여 에이전트를 다운로드하고 설치합니다.
+* Red Hat Enterprise Linux를 사용하여 에이전트를 설치하려면 다음 명령을 사용하여 에이전트를 다운로드하고 설치합니다.
 
-    ```sh
-    sudo yum install –y https://s3.amazonaws.com/streaming-data-agent/aws-kinesis-agent-latest.amz
-    ```
+```sh
+sudo yum install –y https://s3.amazonaws.com/streaming-data-agent/aws-kinesis-agent-latest.amz
+```
 
 
 ## 에이전트 구성 및 시작
