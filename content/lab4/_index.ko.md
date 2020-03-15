@@ -81,21 +81,26 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
     ```python
 	%spark.pyspark
 	from pyspark.sql.functions import concat, col, lit, monotonically_increasing_id
+
+	# S3에 있는 데이터를 읽습니다
 	data = spark.read.format('com.databricks.spark.csv') \
 	    .options(header='false', inferschema='true') \
 	    .option("delimiter", ",") \
 	    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/") \
 	    .cache()
-	    
+
+	# 데이터에 잘못된 값이 끼어 있어 제외시킵니다.
 	data = data.filter("_c1 not like '%\N%'")
-	data = data.repartition(1).withColumn('id', monotonically_increasing_id())
+
+	# 데이터의 헤더를 명명합니다.
+	data = data.selectExpr("_c0 as category", "_c1 as sum", "_c2 as avg")
+	data = data.repartition(1).withColumn('label', monotonically_increasing_id())
 	data.show(100, False)
 
-
-	# 데이터 시각화를 위해 최초 데이터를 저장합니다.
 	data.repartition(1) \
 	    .write.mode('overwrite') \
 	    .option("sep","\t") \
+	    .option("header","true") \
 	    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/org_clustering/")
     ```
 
@@ -124,15 +129,16 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 
     ```python
 	%spark.pyspark
-	data = data.withColumn('f1', concat(lit('1:'),col('_c1')))
-	data = data.withColumn('f2', concat(lit('2:'),col('_c2')))
+	# 각 피쳐를 지정합니다. 카테고리의 sum과 avg를 피쳐로 사용합니다.
+	data = data.withColumn('f1', concat(lit('1:'),col('sum')))
+	data = data.withColumn('f2', concat(lit('2:'),col('avg')))
 
-	data = data.drop('_c0').drop('_c1').drop('_c2')
+	# input data로 필요없는 컬럼은 제외하고 S3에 저장합니다.
+	data = data.drop('category').drop('sum').drop('avg')
 	data.repartition(1) \
 	    .write.mode('overwrite') \
 	    .option("sep"," ") \
 	    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/input_clustering/")
-
     ```
 
 4. K-means로 데이터를 클러스터링합니다.
@@ -143,6 +149,7 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 	from pyspark.ml.clustering import KMeans
 	from pyspark.ml.evaluation import ClusteringEvaluator
 
+	# 앞서 저장한 데이터를 불러옵니다.
 	dataset = spark.read.format("libsvm").load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/input_clustering/")
 
 	# Trains a k-means model.
@@ -169,9 +176,12 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 
     ```python
 	%spark.pyspark
+
+	# 추후 데이터 시각화에서 사용하기 위해 데이터를 저장합니다.
 	predictions.drop('features').repartition(1) \
 	    .write.mode('overwrite') \
 	    .option("sep","\t") \
+	    .option("header","true") \
 	    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/output_clustering/")
     ```
 
@@ -200,13 +210,13 @@ sudo pip install matplotlib
 2. spark를 이용하여 데이터를 읽어옵니다.
 
     ```python
-    %spark.pyspark
+	%spark.pyspark
 	org = spark.read.format('com.databricks.spark.csv') \
 	    .options(header='true', inferschema='true') \
 	    .option("delimiter", "\t") \
 	    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/org_clustering/") \
 	    .cache()
-
+	    
 	output = spark.read.format('com.databricks.spark.csv') \
 	    .options(header='true', inferschema='true') \
 	    .option("delimiter", "\t") \
@@ -234,6 +244,7 @@ sudo pip install matplotlib
 	pd.set_option('display.width', 1000)
 
 	pd_df = data.selectExpr('category','sum','avg','prediction').toPandas()
+	pd_df = pd_df.sort_values(by=['sum'])
     ```
 
 5. 그래프를 그립니다. 하나의 셀에 하나의 그래프를 그립니다
