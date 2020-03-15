@@ -31,31 +31,37 @@ built on top of the Python programming language.
 Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 
 1. EMR 메인 페이지로 이동합니다. [link](https://ap-northeast-2.console.aws.amazon.com/elasticmapreduce/home?region=ap-northeast-2)
+
 2. Clusters를 선택합니다.
+
 3. `EMR-lab-adhoc-20200306` 클러스터를 선택하여 상세 페이지로 이동합니다.
+
 4. Summary 탭의 Enable Web Connection를 클릭하여 지시 사항을 따라합니다.
 그러면 Port forwarding을 통해 Zeppelin에 접속할 수 있습니다.
 
-	FoxyProxy는 아래 링크를 참조해 주시기 바랍니다.
+	* FoxyProxy는 아래 링크를 참조해 주시기 바랍니다.
 
 	[Chrome Extension](https://chrome.google.com/webstore/detail/foxyproxy-basic/dookpfaalaaappcdneeahomimbllocnb?hl=en)
 
 	[Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/)
 
     ![img](./images/lab4_pic1.png)
+---
+
 
     ![img](./images/lab4_pic2.png)
+---
 
 
 5. 링크가 활성화된 Zeppelin을 클릭하여 Zeppelin 페이지로 이동합니다.
 
     ![img](./images/lab4_pic3.png)
-
+---
 
 6. 상단의 `Notebook`을 클릭하고 아래 내용을 참조하여 `Create new note`으로 노트북을 생성합니다.
 
     ![img](./images/lab4_pic4.png)
-
+---
 
 	```
 	Note Name: ecommerce-clustering
@@ -101,7 +107,7 @@ Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니�
 	    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/org_clustering/")
     ```
 
-	아래와 같은 결과물이 출력됩니다.
+	* 아래와 같은 결과물이 출력됩니다.
 
     ```
 	+---------------------------------------------+------------------+------------------+---+
@@ -259,7 +265,7 @@ sudo pip install matplotlib
 6. 아래와 같이 셀의 크기를 조절하여 보기 쉽게 편집할 수 있습니다.
 
     ![img](./images/lab4_pic6.png)
-
+---
 
 <p align="center">
 © 2020 Amazon Web Services, Inc. 또는 자회사, All rights reserved.
