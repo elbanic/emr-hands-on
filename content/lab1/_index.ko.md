@@ -181,6 +181,7 @@ EC2에서 Kinesis Firehose delivery stream에 접근하기 위해서는 사전 �
     ```
 
 
+
 ## 에이전트 구성 및 시작
 
 구성 파일(/etc/aws-kinesis/agent.json)을 열고 편집합니다(기본 파일 액세스 권한을 사용하는 경우 수퍼유저로).
