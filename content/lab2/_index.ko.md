@@ -113,11 +113,13 @@ Hive와 Spark는 아래 설명을 참고하십시오.
 Hive와 Spark를 실행하기 위해 Master Node에 연결합니다. 
 EC2 인스턴스에 연결하는 것과 동일합니다. EMR_PUBLIC_DNS는 EMR 클러스터의 **Master public DNS**입니다. user name에 **hadoop**을 작성하는 것에 유의하십시오.
 
-    ```ssh -i key_file.pem hadoop@EMR_PUBLIC_DNS```
+```
+    ssh -i key_file.pem hadoop@EMR_PUBLIC_DNS
+```
 
 정상적으로 연결되면 아래와 같은 화면이 보입니다.
 
-    ![img](./images/lab2_pic7.png)
+![img](./images/lab2_pic7.png)
 
 
 ## Hive
