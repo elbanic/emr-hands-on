@@ -27,16 +27,16 @@ pre: "<b>2. </b>"
 
 1. Lab 1에서 만들었던 EC2 instance에 연결합니다. 인스턴스는 `EMRLAB-KIN` Name 태그를 가지고 있습니다.
 
-    ```sh
-    ssh -i key_file.pem ec2-user@PUBLIC_DNS
-    ```
+	```sh
+	ssh -i key_file.pem ec2-user@PUBLIC_DNS
+	```
 
 2. Lab 1에서 우리는 S3 버킷 권한을 부여했습니다. 이 권한이 있으므로 아래 명령어를 통해 버킷을 생성합니다. 버킷은 분석용 데이터를 저장할 버킷입니다. 
 *id-* 부분은 본인의 account id로 수정합니다.
 
-    ```sh
-    aws s3 mb s3://id-emr-lab-data-20200306
-    ```
+	```sh
+	aws s3 mb s3://id-emr-lab-data-20200306
+	```
 
 ## 데이터 다운로드
 
