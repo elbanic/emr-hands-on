@@ -22,11 +22,11 @@ Amazon EMR은 업계 최고 수준의 클라우드 네이티브 빅데이터 플
 
 # 과정
 
- * [Lab 1. Kinesis Firehose](/emrlab/lab1)
- * [Lab 2. Adhoc on EMR](/emrlab/lab2) 
- * [Lab 3. Batch Job on EMR](/emrlab/lab3)
- * [Lab 4. Visualization](/emrlab/lab4)
- * [Lab 5. Remove resources on the LAB](/emrlab/lab5)
+ * [Lab 1. Kinesis Firehose](/lab1)
+ * [Lab 2. Adhoc on EMR](/lab2) 
+ * [Lab 3. Batch Job on EMR](/lab3)
+ * [Lab 4. Visualization](/lab4)
+ * [Lab 5. Remove resources on the LAB](/lab5)
 
 ---
 <p align="center">
