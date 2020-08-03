@@ -44,7 +44,7 @@ EMR Hands-On Lab 실습이 완료되었습니다. 마지막으로 지금까지 �
 
 
 # 감사합니다 
-# [설문하러 가기](https://www.surveymonkey.com/r/3V99DNP)
+# [설문하러 가기](https://www.surveymonkey.com/r/KJPZKSQ)
 
 
 <p align="center">
