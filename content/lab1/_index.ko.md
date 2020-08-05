@@ -128,6 +128,11 @@ Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니�
     ![img](./images/lab1_pic13.png)
 ---
 
+5. 이 보안그룹은 Bastion용 호스트가 사용할 보안그룹입니다. 로컬에서 접속 가능하도록 inbound rules에 ssh 포트를 추가합니다.
+
+    ![img](./images/lab1_pic25.png)
+---
+
 
 # Kinesis Firehose delivery streams<a name="Kinesis Firehose delivery streams"></a>
 ---
@@ -158,13 +163,9 @@ Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니�
 ---
 
 
-7. 아래 화면을 참고하여 모든 값을 채워넣습니다. Permissions 탭에서 create new or choose를 클릭하여 사전 준비 단계에서 만들었던 firehose_delivery_role에 권한을 부여합니다.  
+7. 아래 화면을 참고하여 모든 값을 채워넣습니다. Permissions 탭에서 create new or choose를 클릭하여 권한을 부여합니다.  
 
-    ![img](./images/lab1_pic17.png)
----
-
-
-    ![img](./images/lab1_pic18.png)
+    ![img](./images/lab1_pic26.png)
 ---
 
 
@@ -183,7 +184,7 @@ Kinesis Firehose에 Log를 전송할 EC2를 생성합니다.
 
 2. 좌측 네비게이션 메뉴에서 인스턴스를 클릭하고 인스턴스 시작을 클릭합니다.
 
-3. AMI 선택에서 Amazon Linux 2 AMI를 선택합니다. 
+3. AMI 선택에서 Amazon Linux AMI를 선택합니다. (not Amazon Linux 2 AMI)
 
 4. 인스턴스 유형 선택에서 t2.micro 인스턴스를 클릭합니다. 다음.
 
@@ -216,11 +217,16 @@ EC2에서 Kinesis Firehose delivery stream에 접근하기 위해서는 사전 �
 
 ## EC2에 에이전트 설치
 
+참고 https://docs.aws.amazon.com/ko_kr/firehose/latest/dev/writing-with-agents.html#download-install
+
 1. 앞서 생성한 인스턴스에 연결합니다. 아래 그림에서 EC2 인스턴스의 IPv4 퍼블릭 IP 또는 퍼블릭 DNS(IPv4)를 참고하여 아래 명령어의 PUBLIC_DNS 부분에 입력합니다.
+bad permissions 에러가 발생하면 `chmod 400 key.pem` 쉘 명령어를 통해 key.pem 권한을 수정합니다.
 
 ```sh
 ssh -i key.pem ec2-user@PUBLIC_DNS
 ```
+
+### Amazon Linux AMI 인 경우,
 
 2. 다음으로, 다음 중 한 가지 방법을 사용하여 인스턴스를 설치합니다.
 
@@ -237,6 +243,27 @@ sudo yum install –y aws-kinesis-agent
 sudo yum install –y https://s3.amazonaws.com/streaming-data-agent/aws-kinesis-agent-latest.amz
 ```
 
+### Amazon Linux 2 AMI 인 경우
+
+2. git을 설치합니다.
+
+```
+sudo yum install git
+```
+
+3. amazon-kinesis-agent 소스코드를 다운로드 받습니다.
+
+```
+git clone https://github.com/awslabs/amazon-kinesis-agent.git
+```
+
+4. amazon-kinesis-agent를 설치합니다.
+
+```
+cd amazon-kinesis-agent/
+sudo ./setup --install
+```
+
 
 ## 에이전트 구성 및 시작
 
@@ -248,7 +275,7 @@ filePattern에는 수집할 파일의 위치를 지정합니다. 이 랩의 후�
 
 deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으로 입력합니다.
 
-1. `vi /etc/aws-kinesis/agent.json` 명령어로 구성 파일을 열고 아래와 같이 수정합니다.
+1. `sudo vi /etc/aws-kinesis/agent.json` 명령어로 구성 파일을 열고 아래와 같이 수정합니다.
 
 ```json
 {
@@ -322,7 +349,7 @@ while True:
     inc += 1
 ```
 
-3. 아래 파일을 다운로드합니다.
+3. 아래의 파일을 다운로드하여 Bastion용 EC2 인스턴스에 업로드 하거나, 내용을 복사하여 붙여넣기로 `requests_string.txt` 파일을 만듭니다.
 
     [requests_string.txt](https://github.com/elbanic/test/blob/master/requests_string.txt)
 
@@ -330,7 +357,7 @@ while True:
 4. 파일을 실행합니다.
 
 ```sh
-python gen-apache-log.py
+nohup python gen-apache-log.py &
 ```
 
 # 데이터 확인하기<a name="데이터 확인하기"></a>

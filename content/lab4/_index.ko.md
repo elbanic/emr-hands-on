@@ -52,10 +52,11 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 ---
 
 
-5. 링크가 활성화된 Zeppelin을 클릭하여 Zeppelin 페이지로 이동합니다.
+5. Application user interfaces 탭으로 이동하여 Zeppelin의 URL을 참고하여 Zeppelin에 접속합니다.
 
-    ![img](./images/lab4_pic3.png)
+    ![img](./images/lab4_pic7.png)
 ---
+
 
 6. 상단의 `Notebook`을 클릭하고 아래 내용을 참조하여 `Create new note`으로 노트북을 생성합니다.
 
@@ -92,7 +93,7 @@ data = spark.read.format('com.databricks.spark.csv') \
     .cache()
 
 # 데이터에 잘못된 값이 끼어 있어 제외시킵니다.
-data = data.filter("_c1 not like '%\N%'")
+data = data.filter("_c1 not like '%\\N%'")
 
 # 데이터의 헤더를 명명합니다.
 data = data.selectExpr("_c0 as category", "_c1 as sum", "_c2 as avg")
@@ -195,8 +196,8 @@ Pandas와 Matplotlib를 이용하기 위해서는 python package를 설치해야
 EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 
 ```sh
-sudo pip install pandas
-sudo pip install matplotlib
+sudo /usr/bin/pip3 install pandas
+sudo /usr/bin/pip3 install matplotlib
 ```
 
 ![img](./images/lab4_pic5.png)

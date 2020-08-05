@@ -123,12 +123,11 @@ log.repartition(1) \
     .csv(output)
 ```
 
-3. 위 스크립트 파일들을 S3에 업로드합니다.
-파일을 적절한 버킷에 얿로드하거나, 버킷이 없으면 새로 생성하여 업로드합니다.
+3. `id-sample-code` 이름의 S3 버킷을 생성하고 위 스크립트 파일들을 해당 버킷에 업로드합니다.
 
 ```sh
-aws s3 cp hive-process.q s3://bucketname/
-aws s3 cp pyspark-process.py s3://bucketname/
+aws s3 cp hive-process.q s3://id-sample-code/
+aws s3 cp pyspark-process.py s3://id-sample-code/
 ```
 
 ## Steps 동작 테스트
@@ -150,7 +149,7 @@ aws s3 cp pyspark-process.py s3://bucketname/
     ```text
     Step type: Hive program
     Name: hive-process
-    Script S3 location: s3://bucketname/scripts/hive-process.q
+    Script S3 location: s3://id-sample-code/hive-process.q
     Input S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/
     Output S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/
     Action on failure: Continue
@@ -171,8 +170,8 @@ Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지
     Step type: Spark application
     Name: pyspark-process
     Deploy mode: Cluster
-    Application location: s3://bucketname/scripts/pyspark-process.py
-    Arguments: s3://emr-lab-20200303/2020/03/*/* s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog/
+    Application location: s3://id-sample-code/pyspark-process.py
+    Arguments: s3://id-emr-lab-20200306/2020/08/*/* s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog/
     Action on failure: Continue
     ```
 

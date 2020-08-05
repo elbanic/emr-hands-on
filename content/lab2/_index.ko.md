@@ -5,7 +5,6 @@ pre: "<b>2. </b>"
 ---
 
 
-
 이번 실습은 Adhoc 분석을 실습합니다.
 
 분석에 적합한 데이터를 이용하여 Adhoc 분석을 실습합니다. ***1) SQL 형태의 Hive를 이용한 분석***과 ***2) PySpark를 이용하여 클러스터 프로그래밍***을 경험할 수 있습니다. 
@@ -41,7 +40,8 @@ aws s3 mb s3://id-emr-lab-data-20200306
 ## 데이터 다운로드
 
 1. 실습에서 사용할 데이터를 다운로드합니다. 실습은 Kaggle의 [Brazilian E-Commerce Public Dataset by Olist]((https://www.kaggle.com/olistbr/brazilian-ecommerce))를 사용할 것입니다. 
-아래 링크를 클릭하여 파일을 다운로드하세요. 데이터는 order와 customer, product등의 데이터가 잘 연결되어 있어서 이번 실습에서 사용하기 적합합니다.
+아래 링크를 클릭하여 파일을 다운로드해 주십시오. 데이터는 order와 customer, product등의 데이터가 잘 연결되어 있어서 이번 실습에서 사용하기 적합합니다.
+`brazilian-ecommerce` prefix를 만들어서 업로드 하시기 바랍니다.
 
     [Download](https://www.kaggle.com/olistbr/brazilian-ecommerce/download)
 
@@ -50,13 +50,15 @@ aws s3 mb s3://id-emr-lab-data-20200306
 실습에서는 order, order_info, product, customer 데이터만 사용할 것입니다.
 또한 Hive는 directory 단위로 데이터를 읽습니다. 따라서 각 directory의 역할을 할 수 있도록 prefix를 추가합니다.
 
-```sh
-aws s3 cp brazilian-ecommerce/olist_customers_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer/
-aws s3 cp brazilian-ecommerce/olist_products_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/product/
-aws s3 cp brazilian-ecommerce/olist_order_items_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/order/
-aws s3 cp brazilian-ecommerce/olist_orders_dataset.csv s3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/
-```
-  
+
+    ![img](./images/lab2_pic21.png)
+---
+
+* olist_customers_dataset.csv -> s3://euijj-emr-lab-data-20200307/brazilian-ecommerce/customer/
+* olist_products_dataset.csv -> s3://euijj-emr-lab-data-20200307/brazilian-ecommerce/product/
+* olist_order_items_dataset.csv -> s3://euijj-emr-lab-data-20200307/brazilian-ecommerce/order/
+* olist_orders_dataset.csv -> s3://euijj-emr-lab-data-20200307/brazilian-ecommerce/order_info/
+
 실습에서 사용할 데이터가 준비되었습니다.
 
 
@@ -116,7 +118,9 @@ Hive와 Spark는 아래 설명을 참고하십시오.
 * [Apache Spark](https://spark.apache.org/)는 오픈 소스 클러스터 컴퓨팅 프레임워크로, 암시적 데이터 병렬성과 장애 허용과 더불어 완전한 클러스터를 프로그래밍하기 위한 인터페이스를 제공합니다.
 
 Hive와 Spark를 실행하기 위해 Master Node에 연결합니다. 
-EC2 인스턴스에 연결하는 것과 동일합니다. EMR_PUBLIC_DNS는 EMR 클러스터의 **Master public DNS**입니다. user name에 **hadoop**을 작성하는 것에 유의하십시오.
+EC2 인스턴스의 Security Group에 ssh 연결을 위해 22 포트를 inbound rules로 추가한 것처럼, ElasticMapReduce-master Security Group에도 동일하게 22 포트를 추가해 줍니다.
+ssh 연결은 EC2 인스턴스에 연결하는 것과 동일합니다. EMR_PUBLIC_DNS는 EMR 클러스터의 **Master public DNS**입니다. user name에 **hadoop**을 작성하는 것에 유의하십시오.
+
 
 ```sh
 ssh -i key_file.pem hadoop@EMR_PUBLIC_DNS
@@ -237,7 +241,7 @@ import pyspark.sql.functions as f
 log_raw = spark.read.format('com.databricks.spark.csv') \
   .options(header='false', inferschema='true') \
   .option("delimiter", "\t") \
-  .load("s3://emr-lab-20200224/2020/03/*/*") \
+  .load("id-emr-lab-20200306/2020/03/*/*") \
   .cache()
 
 splitter = f.split(log_raw['_c0'], ' - - |\"')
@@ -270,7 +274,7 @@ import pyspark.sql.functions as f
 customer = spark.read.format('com.databricks.spark.csv') \
   .options(header='true', inferschema='true') \
   .option("delimiter", ",") \
-  .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/customer/") \
+  .load("s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer/") \
   .cache()
 
 customer_total_purchase = spark.read.format('com.databricks.spark.csv') \
