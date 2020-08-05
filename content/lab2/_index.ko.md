@@ -39,7 +39,7 @@ aws s3 mb s3://id-emr-lab-data-20200306
 
 ## 데이터 다운로드
 
-1. 실습에서 사용할 데이터를 다운로드합니다. 실습은 Kaggle의 [Brazilian E-Commerce Public Dataset by Olist]((https://www.kaggle.com/olistbr/brazilian-ecommerce))를 사용할 것입니다. 
+1. 실습에서 사용할 데이터를 다운로드합니다. 실습은 Kaggle의 [Brazilian E-Commerce Public Dataset by Olist] https://www.kaggle.com/olistbr/brazilian-ecommerce 를 사용할 것입니다. 
 아래 링크를 클릭하여 파일을 다운로드해 주십시오. 데이터는 order와 customer, product등의 데이터가 잘 연결되어 있어서 이번 실습에서 사용하기 적합합니다.
 `brazilian-ecommerce` prefix를 만들어서 업로드 하시기 바랍니다.
 
