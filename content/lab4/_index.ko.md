@@ -7,7 +7,7 @@ pre: "<b>4. </b>"
 
 이번 실습에서는 그동안 뽑아 두었던 데이터를 응용하고 시각화하는 방법에 대해 학습합니다. 
 
-* Zeppelin: Web-based notebook that enables data-driven, interactive data analytics and collaborative documents with SQL, Scala and more.
+* JupyterHub: JupyterHub brings the power of notebooks to groups of users. It gives users access to computational environments and resources without burdening the users with installation and maintenance tasks. Users - including students, researchers, and data scientists - can get their work done in their own workspaces on shared resources which can be managed efficiently by system administrators.
 
 * Spark MLlib: MLlib is Apache Spark's scalable machine learning library.
 
@@ -19,16 +19,16 @@ built on top of the Python programming language.
 
 ## Table of Contents
 
-1. Zeppelin Notebook
+1. JupyterHub
 2. SparkMLib
 3. Pandas & Matplotlib
 
 
-# Zeppelin Notebook<a name="Zeppelin Notebook"></a>
+# JupyterHub<a name="JupyterHub"></a>
 ---
 
-앞서 Lab 2에서 생성한 `EMR-lab-adhoc-20200306` 클러스터는 Zeppelin을 포함하고 있습니다.
-Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
+앞서 Lab 2에서 생성한 `EMR-lab-adhoc-20200306` 클러스터는 JupyterHub를 포함하고 있습니다.
+JupyterHub에 연결하기 위해 아래 지시를 따라합니다.
 
 1. EMR 메인 페이지로 이동합니다. [link](https://ap-northeast-2.console.aws.amazon.com/elasticmapreduce/home?region=ap-northeast-2)
 
@@ -37,7 +37,7 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 3. `EMR-lab-adhoc-20200306` 클러스터를 선택하여 상세 페이지로 이동합니다.
 
 4. Summary 탭의 Enable Web Connection를 클릭하여 지시 사항을 따라합니다.
-그러면 Port forwarding을 통해 Zeppelin에 접속할 수 있습니다.
+그러면 Port forwarding을 통해 JupyterHub에 접속할 수 있습니다.
 
 	* FoxyProxy는 아래 링크를 참조해 주시기 바랍니다.
 
@@ -52,22 +52,24 @@ Zeppelin에 연결하기 위해 아래 지시를 따라합니다.
 ---
 
 
-5. Application user interfaces 탭으로 이동하여 Zeppelin의 URL을 참고하여 Zeppelin에 접속합니다.
+5. Application user interfaces 탭으로 이동하여 JupyterHub의 URL을 참고하여 접속합니다.
 
     ![img](./images/lab4_pic7.png)
 ---
 
+6. Amazon EMR의 JupyterHub에는 관리자 권한이 있는 기본 사용자가 있습니다. 사용자 이름은 jovyan이고, 암호는 jupyter입니다.
 
-6. 상단의 `Notebook`을 클릭하고 아래 내용을 참조하여 `Create new note`으로 노트북을 생성합니다.
+https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/emr-jupyterhub-user-access.html
+
+    ![img](./images/lab4_pic8.png)
+---
+
+
+6. 우측 상단의 New를 클릭하여 `PySpark`으로 노트북을 생성합니다.
 
     ![img](./images/lab4_pic4.png)
 ---
 
-```text
-Note Name: ecommerce-clustering
-Default Interpreter: python
-```
-	
 # Spark MLlib<a name="Spark_Llib"></a>
 ---
 
@@ -76,13 +78,16 @@ Default Interpreter: python
 총액과 평균 금액을 클러스터링에 적절한 feature라고 볼 수는 없지만 Spark MLlib의 간단한 실습으로는 부족하지 않습니다.
 라이브러리 사용법은 [Spark MLlib K-means](https://spark.apache.org/docs/latest/ml-clustering.html#k-means)를 참조해 주시기 바랍니다.
 
-1. 브라우저를 실행하여 이전 단계에서 생성한 Zeppelin 노트북 `ecommerce-clustering`을 엽니다.
+1. 브라우저를 실행하여 이전 단계에서 생성한 JupyterHub 노트북을 엽니다.
+각 셀에서 코드를 실행할 수 있습니다.
+
+    ![img](./images/lab4_pic9.png)
+---
 
 2. Spark를 이용하여 S3에 있는 카테고리별 판매 금액 총액과 평균 금액 데이터를 확인합니다.
 Notebook에서는 shift+enter를 누르면 해당 셀의 코드가 실행됩니다.
 
 ```python
-%spark.pyspark
 from pyspark.sql.functions import concat, col, lit, monotonically_increasing_id
 
 # S3에 있는 데이터를 읽습니다
@@ -110,28 +115,23 @@ data.repartition(1) \
 아래와 같은 결과물이 출력됩니다.
 
 ```
-+---------------------------------------------+------------------+------------------+---+
-|_c0                                          |_c1               |_c2               |id |
-+---------------------------------------------+------------------+------------------+---+
-|pcs                                          |222963.1299999999 |1098.3405418719205|0  |
-|portateis_casa_forno_e_cafe                  |47445.71000000001 |624.2856578947369 |1  |
-|eletrodomesticos_2                           |113317.73999999995|476.12495798319304|2  |
-|agro_industria_e_comercio                    |72530.46999999997 |342.1248584905659 |3  |
-|instrumentos_musicais                        |191498.87999999884|281.6159999999983 |4  |
-|eletroportateis                              |190648.57999999973|280.7784683357875 |5  |
-|portateis_cozinha_e_preparadores_de_alimentos|3968.53           |264.5686666666667 |6  |
-|telefonia_fixa                               |59583.000000000044|225.69318181818198|7  |
-|construcao_ferramentas_seguranca             |40544.52000000007 |208.99237113402097|8  |
-|relogios_presentes                           |1205005.6799999864|201.1359839759617 |9  |
-+---------------------------------------------+------------------+------------------+---+
-only showing top 10 rows
++----------------------------------------------+------------------+------------------+-----+
+|category                                      |sum               |avg               |label|
++----------------------------------------------+------------------+------------------+-----+
+|pcs                                           |222963.1299999999 |1098.3405418719205|0    |
+|portateis_casa_forno_e_cafe                   |47445.71000000001 |624.2856578947369 |1    |
+|eletrodomesticos_2                            |113317.73999999995|476.12495798319304|2    |
+|agro_industria_e_comercio                     |72530.46999999997 |342.1248584905659 |3    |
+|instrumentos_musicais                         |191498.87999999884|281.6159999999983 |4    |
+|eletroportateis                               |190648.57999999973|280.7784683357875 |5    |
+...
++----------------------------------------------+------------------+------------------+-----+
 ```
 
 3. 위 데이터를 Spark MLlib K-means API에서 처리 가능한 데이터로 변환합니다.
 변환한 데이터를 S3에 다시 저장합니다.
 
 ```python
-%spark.pyspark
 # 각 피쳐를 지정합니다. 카테고리의 sum과 avg를 피쳐로 사용합니다.
 data = data.withColumn('f1', concat(lit('1:'),col('sum')))
 data = data.withColumn('f2', concat(lit('2:'),col('avg')))
@@ -148,7 +148,6 @@ data.repartition(1) \
 아래 코드는 [Spark MLlib K-means](https://spark.apache.org/docs/latest/ml-clustering.html#k-means)에서 example 코드를 가져왔습니다.
 
 ```python
-%spark.pyspark
 from pyspark.ml.clustering import KMeans
 from pyspark.ml.evaluation import ClusteringEvaluator
 
@@ -178,7 +177,6 @@ for center in centers:
 5. 결과물을 저장합니다.
 
 ```python
-%spark.pyspark
 
 # 추후 데이터 시각화에서 사용하기 위해 데이터를 저장합니다.
 predictions.drop('features').repartition(1) \
@@ -200,20 +198,12 @@ sudo /usr/bin/pip3 install pandas
 sudo /usr/bin/pip3 install matplotlib
 ```
 
-![img](./images/lab4_pic5.png)
----
+1. 아까 작업하던 JupyterHub 노트북으로 되돌아 갑니다.
 
-1. Zeppelin에서 아래 내용을 참고하여 새 노트북을 생성합니다.
-
-```text
-Note Name: data-visualization
-Default Interpreter: python
-```
 
 2. spark를 이용하여 데이터를 읽어옵니다.
 
 ```python
-%spark.pyspark
 org = spark.read.format('com.databricks.spark.csv') \
     .options(header='true', inferschema='true') \
     .option("delimiter", "\t") \
@@ -230,7 +220,6 @@ output = spark.read.format('com.databricks.spark.csv') \
 3. 가져온 두 테이블을 조인하고 데이터를 확인합니다.
 
 ```python
-%spark.pyspark
 data = org.join(output, org.label == output.label, how='inner')
 data.show()
 ```
@@ -238,7 +227,6 @@ data.show()
 4. 그래프를 그리기 위해 Pandas와 Matplotlib를 import 합니다.
 
 ```python
-%spark.pyspark
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -253,18 +241,21 @@ pd_df = pd_df.sort_values(by=['sum'])
 5. 그래프를 그립니다. 하나의 셀에 하나의 그래프를 그립니다
 
 ```python
-%spark.pyspark
 ax1 = pd_df.plot.line(x='sum', y='avg')
+%matplot plt
 ```
 
 ```python
-%spark.pyspark
 ax2 = pd_df.plot.scatter(x='sum', y='avg', c='prediction', colormap='viridis')
+%matplot plt
 ```
 
-6. 아래와 같이 셀의 크기를 조절하여 보기 쉽게 편집할 수 있습니다.
+6. 아래와 같이 데이터를 시각화했습니다.
 
-    ![img](./images/lab4_pic6.png)
+    ![img](./images/lab4_pic10.png)
+---
+
+    ![img](./images/lab4_pic11.png)
 ---
 
 <p align="center">
