@@ -277,11 +277,13 @@ deliveryStream에 앞서 만든 키네시스 딜리버리 스트림의 이름으
 
 1. `sudo vi /etc/aws-kinesis/agent.json` 명령어로 구성 파일을 열고 아래와 같이 수정합니다.
 
+_region_endpoint_ 부분은 https://docs.aws.amazon.com/ko_kr/general/latest/gr/fh.html 를 참고해 주시기 바랍니다.
+
 ```json
 {
   "cloudwatch.emitMetrics": true,
   "kinesis.endpoint": "",
-  "firehose.endpoint": "firehose.ap-northeast-2.amazonaws.com",
+  "firehose.endpoint": "firehose._region_endpoint_.amazonaws.com",
 
   "flows": [
     {
