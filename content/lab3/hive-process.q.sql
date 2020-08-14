@@ -33,7 +33,7 @@ JOIN product P ON (O.product_id = P.product_id)
 GROUP BY P.product_category_name
 ORDER BY avg_price DESC;
 
-INSERT OVERWRITE DIRECTORY '${OUTPUT}/category_price_sum_avg2'
+INSERT OVERWRITE DIRECTORY '${OUTPUT}/category_price_sum_avg'
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
