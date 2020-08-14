@@ -51,15 +51,7 @@ s3의 적절한 경로에 업로드 해주시기 바랍니다. 이 경우에는 
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
 ```
 
-6. Spark 프로젝트 생성이 완료되면 SparkSimpleJob/src/main/scala/com/aws/sample/SparkSimpleJob.scala 파일을 열어서 아래 input, output 부분을 수정합니다. 
-input 부분은 앞서 업로드한 파일의 위치를 가리킵니다.
-
-```scala
-    val input = "s3://samples-euijj/wordcount_sample.txt"   // input 경로
-    val output = "s3://samples-euijj/wordcount_output"  // output 경로
-```
-
-7. 우측 Maven plugin 창을 확장하여 install 합니다.
+6. Spark 프로젝트 생성이 완료되면 우측 Maven plugin 창을 확장하여 install 합니다.
 
     ![img](./images/lab6_pic4.png)
 ---
@@ -82,7 +74,7 @@ ssh -i key.pem ec2-user@PUBLIC_DNS
 2. SparkSimpleJob-1.0.0.jar을 업로드하여 아래의 명령어를 실행합니다.
 
 ```sh
-spark-submit ./SparkSimpleJob-1.0.0.jar
+spark-submit ./SparkSimpleJob-1.0.0.jar INPUT_PATH OUTPUT_PATH
 ```
 
 3. 앞서 작성한 output 경로에 결과물이 저장된 것을 확인할 수 있습니다.
