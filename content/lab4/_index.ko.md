@@ -34,16 +34,19 @@ JupyterHub에 연결하기 위해 아래 지시를 따라합니다.
 
 2. Clusters를 선택합니다.
 
-3. `EMR-lab-adhoc-20200306` 클러스터를 선택하여 상세 페이지로 이동합니다.
+3. `EMR-lab-adhoc-2020` 클러스터를 선택하여 상세 페이지로 이동합니다.
 
 4. Summary 탭의 Enable Web Connection를 클릭하여 지시 사항을 따라합니다.
 그러면 Port forwarding을 통해 JupyterHub에 접속할 수 있습니다.
 
-	* FoxyProxy는 아래 링크를 참조해 주시기 바랍니다.
 
-	[Chrome Extension](https://chrome.google.com/webstore/detail/foxyproxy-basic/dookpfaalaaappcdneeahomimbllocnb?hl=en)
+* FoxyProxy는 아래 링크를 참조해 주시기 바랍니다.
 
-	[Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/)
+
+[Chrome Extension](https://chrome.google.com/webstore/detail/foxyproxy-basic/dookpfaalaaappcdneeahomimbllocnb?hl=en)
+
+
+[Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/)
 
     ![img](./images/lab4_pic1.png)
 ---
@@ -59,7 +62,6 @@ JupyterHub에 연결하기 위해 아래 지시를 따라합니다.
 
 6. Amazon EMR의 JupyterHub에는 관리자 권한이 있는 기본 사용자가 있습니다. 사용자 이름은 jovyan이고, 암호는 jupyter입니다.
 
-https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/emr-jupyterhub-user-access.html
 
     ![img](./images/lab4_pic8.png)
 ---

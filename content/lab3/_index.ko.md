@@ -151,9 +151,9 @@ aws s3 cp pyspark-process.py s3://id-sample-code/
     ```text
     Step type: Hive program
     Name: hive-process
-    Script S3 location: s3://id-sample-code/hive-process.q
-    Input S3 location: s3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/
-    Output S3 location: s3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/
+    Script S3 location: s3://euijj-sample-code/hive-process.q
+    Input S3 location: s3://euijj-emr-lab-ecommerce-2020/
+    Output S3 location: s3://euijj-emr-lab-ecommerce-2020/
     Action on failure: Continue
     ```
 
@@ -173,7 +173,7 @@ Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지
     Name: pyspark-process
     Deploy mode: Cluster
     Application location: s3://id-sample-code/pyspark-process.py
-    Arguments: s3://id-emr-labs-2020/2020/08/*/* s3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/apachelog/
+    Arguments: s3://euijj-emr-labs-2020/2020/10/*/* s3://euijj-emr-lab-ecommerce-2020/apachelog/
     Action on failure: Continue
     ```
 
