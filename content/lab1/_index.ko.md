@@ -71,44 +71,6 @@ pre: "<b>1. </b>"
 ---
 
 
-## Kinesis Firehose에서 S3 접근 권한
-
-Kinesis Firehose에서 S3에 데이터를 쓰기 위한 권한이 필요합니다. 이 권한을 IAM role로 지정하여 할 수 있습니다.
-
-1. IAM 페이지로 이동합니다. [link](https://console.aws.amazon.com/iam/home)
-2. 역할을 선택합니다. 
-3. 역할 만들기를 선택합니다.
-
-    ![img](./images/lab1_pic7.png)
----
-
-
-4. Kinesis Firehose를 선택합니다.
-
-    ![img](./images/lab1_pic8.png)
----
-
-
-    ![img](./images/lab1_pic9.png)
----
-
-
-5. 정책 선택에서 아무것도 선택하지 않고 다음을 클릭하여 다음 단계로 넘어갑니다.
-
-6. 태그를 추가하지 않고 다음을 클릭하여 다음 단계로 넘어갑니다. 
-
-7. 역할 이름에 `firehose_delivery_role`를 입력하고 역할 만들기를 클합니다.
-
-    ![img](./images/lab1_pic10.png)
----
-
-
-8. Firehose에서 다른 서비스로 접근을 제어할 수 있는 역할이 생성되었습니다.
-
-    ![img](./images/lab1_pic11.png)
----
-
-
 ## Security Group
 
 이번 실습에서 사용할 EC2에 연결할 Security Group이 필요합니다.
@@ -184,7 +146,7 @@ Kinesis Firehose에 Log를 전송할 EC2를 생성합니다.
 
 2. 좌측 네비게이션 메뉴에서 인스턴스를 클릭하고 인스턴스 시작을 클릭합니다.
 
-3. AMI 선택에서 Amazon Linux AMI를 선택합니다. (not Amazon Linux 2 AMI)
+3. AMI 선택에서 Amazon Linux 2 AMI를 선택합니다. 
 
 4. 인스턴스 유형 선택에서 t2.micro 인스턴스를 클릭합니다. 다음.
 
@@ -226,8 +188,6 @@ bad permissions 에러가 발생하면 `chmod 400 key.pem` 쉘 명령어를 통�
 ssh -i key.pem ec2-user@PUBLIC_DNS
 ```
 
-### Amazon Linux AMI 인 경우,
-
 2. 다음으로, 다음 중 한 가지 방법을 사용하여 인스턴스를 설치합니다.
 
 * Amazon Linux AMI를 이용해 에이전트를 설치하려면 다음 명령을 사용하여 에이전트를 다운로드하고 설치합니다.
@@ -241,27 +201,6 @@ sudo yum install –y aws-kinesis-agent
 
 ```sh
 sudo yum install –y https://s3.amazonaws.com/streaming-data-agent/aws-kinesis-agent-latest.amz
-```
-
-### Amazon Linux 2 AMI 인 경우
-
-2. git을 설치합니다.
-
-```
-sudo yum install git
-```
-
-3. amazon-kinesis-agent 소스코드를 다운로드 받습니다.
-
-```
-git clone https://github.com/awslabs/amazon-kinesis-agent.git
-```
-
-4. amazon-kinesis-agent를 설치합니다.
-
-```
-cd amazon-kinesis-agent/
-sudo ./setup --install
 ```
 
 
@@ -283,7 +222,7 @@ _region_endpoint_ 부분은 https://docs.aws.amazon.com/ko_kr/general/latest/gr/
 {
   "cloudwatch.emitMetrics": true,
   "kinesis.endpoint": "",
-  "firehose.endpoint": "firehose._region_endpoint_.amazonaws.com",
+  "firehose.endpoint": "firehose.ap-northeast-2.amazonaws.com",
 
   "flows": [
     {

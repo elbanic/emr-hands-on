@@ -34,7 +34,7 @@ ssh -i key_file.pem ec2-user@PUBLIC_DNS
 *id-* 부분은 본인의 account id로 수정합니다.
 
 ```sh
-aws s3 mb s3://id-emr-lab-data-20200306
+aws s3 mb s3://id-emr-lab-ecommerce-data-2020
 ```
 
 ## 데이터 다운로드
@@ -54,10 +54,10 @@ aws s3 mb s3://id-emr-lab-data-20200306
     ![img](./images/lab2_pic21.png)
 ---
 
-* olist_customers_dataset.csv -> s3://euijj-emr-lab-data-20200307/brazilian-ecommerce/customer/
-* olist_products_dataset.csv -> s3://euijj-emr-lab-data-20200307/brazilian-ecommerce/product/
-* olist_order_items_dataset.csv -> s3://euijj-emr-lab-data-20200307/brazilian-ecommerce/order/
-* olist_orders_dataset.csv -> s3://euijj-emr-lab-data-20200307/brazilian-ecommerce/order_info/
+* olist_customers_dataset.csv -> s3://euijj-emr-lab-ecommerce-data-2020/brazilian-ecommerce/customer/
+* olist_products_dataset.csv -> s3://euijj-emr-lab-ecommerce-data-2020/brazilian-ecommerce/product/
+* olist_order_items_dataset.csv -> s3://euijj-emr-lab-ecommerce-data-2020/brazilian-ecommerce/order/
+* olist_orders_dataset.csv -> s3://euijj-emr-lab-ecommerce-data-2020/brazilian-ecommerce/order_info/
 
 실습에서 사용할 데이터가 준비되었습니다.
 
@@ -105,7 +105,8 @@ Lab 4에서 사용할 예정인 JupyterHub 미리 설치합니다. Next를 눌�
 ---
 
 실습에서 사용할 클러스터의 생성이 완료되었습니다.
-	
+
+
 
 # Analysis<a name="Analysis"></a>
 ---
@@ -155,7 +156,7 @@ freight_value              DOUBLE
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order/';
+LOCATION 's3://id-emr-lab-ecommerce-data-2020/brazilian-ecommerce/order/';
 
 CREATE EXTERNAL TABLE IF NOT EXISTS product (
 product_id                  STRING,
@@ -170,7 +171,7 @@ product_width_cm            int
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-location 's3://id-emr-lab-data-20200306/brazilian-ecommerce/product/';
+location 's3://id-emr-lab-ecommerce-data-2020/brazilian-ecommerce/product/';
 
 CREATE EXTERNAL TABLE IF NOT EXISTS order_info (
 order_id                       STRING,
@@ -184,7 +185,7 @@ order_estimated_delivery_date  STRING
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-LOCATION 's3://id-emr-lab-data-20200306/brazilian-ecommerce/order_info/';
+LOCATION 's3://id-emr-lab-ecommerce-data-2020/brazilian-ecommerce/order_info/';
 ```
 
 2. Product Category별 구매 금액 Sum, Avg을 구하고 저장하는 쿼리를 작성합니다.
@@ -197,7 +198,7 @@ JOIN product P ON (O.product_id = P.product_id)
 GROUP BY P.product_category_name
 ORDER BY avg_price DESC;
 
-INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg'
+INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-ecommerce-data-2020/brazilian-ecommerce/category_price_sum_avg'
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE 
@@ -214,7 +215,7 @@ JOIN order_info I ON (O.order_id = I.order_id)
 GROUP BY I.customer_id 
 ORDER BY sum_purchase DESC;
 
-INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-data-20200306/brazilian-ecommerce/customer_total_purchase'
+INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-ecommerce-data-2020/brazilian-ecommerce/customer_total_purchase'
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE 
@@ -241,7 +242,7 @@ import pyspark.sql.functions as f
 log_raw = spark.read.format('com.databricks.spark.csv') \
   .options(header='false', inferschema='true') \
   .option("delimiter", "\t") \
-  .load("id-emr-lab-20200306/2020/03/*/*") \
+  .load("id-emr-lab-ecommerce-data-2020/2020/03/*/*") \
   .cache()
 
 splitter = f.split(log_raw['_c0'], ' - - |\"')
@@ -264,7 +265,7 @@ log.filter(log_raw.status != 200).count()
 # 테이블로 정제한 데이터를 S3에 저장합니다.
 log.repartition(1) \
   .write.mode('overwrite') \
-  .csv('s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog')
+  .csv('s3://id-emr-lab-ecommerce-data-2020/brazilian-ecommerce/apachelog')
 ```
 
 2. SQL 형태의 분석도 가능합니다. 앞서 Hive에서 추출한 데이터로부터 도시별 구매 금액과 평균과 합계를 확인합니다.
@@ -274,13 +275,13 @@ import pyspark.sql.functions as f
 customer = spark.read.format('com.databricks.spark.csv') \
   .options(header='true', inferschema='true') \
   .option("delimiter", ",") \
-  .load("s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer/") \
+  .load("s3://id-emr-lab-ecommerce-data-2020/brazilian-ecommerce/customer/") \
   .cache()
 
 customer_total_purchase = spark.read.format('com.databricks.spark.csv') \
   .options(header='false', inferschema='true') \
   .option("delimiter", ",") \
-  .load("s3://id-emr-lab-data-20200306/brazilian-ecommerce/customer_total_purchase") \
+  .load("s3://id-emr-lab-ecommerce-data-2020/brazilian-ecommerce/customer_total_purchase") \
   .cache()
 
 # 조인
@@ -294,7 +295,7 @@ city_purchase = customer_info.groupBy(customer_info.customer_city) \
 # 결과 데이터를 S3에 저장합니다.
 city_purchase.repartition(1) \
   .write.mode('overwrite') \
-  .csv('s3://id-emr-lab-data-20200306/brazilian-ecommerce/city_purchase')
+  .csv('s3://id-emr-lab-ecommerce-data-2020/brazilian-ecommerce/city_purchase')
 ```
 
 
