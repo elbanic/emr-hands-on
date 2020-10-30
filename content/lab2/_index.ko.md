@@ -31,10 +31,10 @@ ssh -i key_file.pem ec2-user@PUBLIC_DNS
 ```
 
 2. Lab 1에서 우리는 S3 버킷 권한을 부여했습니다. 이 권한이 있으므로 아래 명령어를 통해 버킷을 생성합니다. 버킷은 분석용 데이터를 저장할 버킷입니다. 
-*id-* 부분은 본인의 account id로 수정합니다.
+*euijj-* 부분은 본인의 account id로 수정합니다.
 
 ```sh
-aws s3 mb s3://id-emr-lab-ecommerce-2020
+aws s3 mb s3://euijj-emr-lab-ecommerce-2020
 ```
 
 ## 데이터 다운로드
@@ -49,7 +49,6 @@ aws s3 mb s3://id-emr-lab-ecommerce-2020
 2. 파일 다운로드가 완료되면 압축을 풀고 이전에 생성한 S3의 버킷에 업로드합니다.
 실습에서는 order, order_info, product, customer 데이터만 사용할 것입니다.
 또한 Hive는 directory 단위로 데이터를 읽습니다. 따라서 각 directory의 역할을 할 수 있도록 prefix를 추가합니다.
-
 
     ![img](./images/lab2_pic21.png)
 ---
@@ -89,7 +88,7 @@ Lab 4에서 사용할 예정인 JupyterHub 미리 설치합니다. Next를 눌�
     ![img](./images/lab2_pic3.png)
 ---
 
-7. 클러스터 이름을 `EMR-lab-adhoc-20200306` 으로 넣고 Logging과 Debugging 옵션을 켭니다. Termination protection은 선택 해제 후 Next 를 눌러 다음 단계로 넘어갑니다.
+7. 클러스터 이름을 `EMR-lab-adhoc-2020` 으로 넣고 Logging과 Debugging 옵션을 켭니다. Termination protection은 선택 해제 후 Next 를 눌러 다음 단계로 넘어갑니다.
 
     ![img](./images/lab2_pic4.png)
 ---
@@ -156,7 +155,7 @@ freight_value              DOUBLE
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-LOCATION 's3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/order/';
+LOCATION 's3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/order/';
 
 CREATE EXTERNAL TABLE IF NOT EXISTS product (
 product_id                  STRING,
@@ -171,7 +170,7 @@ product_width_cm            int
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-location 's3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/product/';
+location 's3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/product/';
 
 CREATE EXTERNAL TABLE IF NOT EXISTS order_info (
 order_id                       STRING,
@@ -185,7 +184,7 @@ order_estimated_delivery_date  STRING
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-LOCATION 's3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/order_info/';
+LOCATION 's3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/order_info/';
 ```
 
 2. Product Category별 구매 금액 Sum, Avg을 구하고 저장하는 쿼리를 작성합니다.
@@ -198,7 +197,7 @@ JOIN product P ON (O.product_id = P.product_id)
 GROUP BY P.product_category_name
 ORDER BY avg_price DESC;
 
-INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/category_price_sum_avg'
+INSERT OVERWRITE DIRECTORY 's3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/category_price_sum_avg'
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE 
@@ -215,7 +214,7 @@ JOIN order_info I ON (O.order_id = I.order_id)
 GROUP BY I.customer_id 
 ORDER BY sum_purchase DESC;
 
-INSERT OVERWRITE DIRECTORY 's3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/customer_total_purchase'
+INSERT OVERWRITE DIRECTORY 's3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/customer_total_purchase'
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE 
@@ -242,7 +241,7 @@ import pyspark.sql.functions as f
 log_raw = spark.read.format('com.databricks.spark.csv') \
   .options(header='false', inferschema='true') \
   .option("delimiter", "\t") \
-  .load("id-emr-lab-ecommerce-2020/2020/03/*/*") \
+  .load("euijj-emr-lab-ecommerce-2020/2020/03/*/*") \
   .cache()
 
 splitter = f.split(log_raw['_c0'], ' - - |\"')
@@ -265,7 +264,7 @@ log.filter(log_raw.status != 200).count()
 # 테이블로 정제한 데이터를 S3에 저장합니다.
 log.repartition(1) \
   .write.mode('overwrite') \
-  .csv('s3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/apachelog')
+  .csv('s3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/apachelog')
 ```
 
 2. SQL 형태의 분석도 가능합니다. 앞서 Hive에서 추출한 데이터로부터 도시별 구매 금액과 평균과 합계를 확인합니다.
@@ -275,13 +274,13 @@ import pyspark.sql.functions as f
 customer = spark.read.format('com.databricks.spark.csv') \
   .options(header='true', inferschema='true') \
   .option("delimiter", ",") \
-  .load("s3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/customer/") \
+  .load("s3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/customer/") \
   .cache()
 
 customer_total_purchase = spark.read.format('com.databricks.spark.csv') \
   .options(header='false', inferschema='true') \
   .option("delimiter", ",") \
-  .load("s3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/customer_total_purchase") \
+  .load("s3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/customer_total_purchase") \
   .cache()
 
 # 조인
@@ -295,7 +294,7 @@ city_purchase = customer_info.groupBy(customer_info.customer_city) \
 # 결과 데이터를 S3에 저장합니다.
 city_purchase.repartition(1) \
   .write.mode('overwrite') \
-  .csv('s3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/city_purchase')
+  .csv('s3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/city_purchase')
 ```
 
 
@@ -308,7 +307,7 @@ city_purchase.repartition(1) \
 
 2. Clusters를 선택합니다. 
 
-3. 실습에서 생성했던 `EMR-lab-adhoc-20200306` 클러스터를 선택합니다.
+3. 실습에서 생성했던 `EMR-lab-adhoc-2020` 클러스터를 선택합니다.
 
 4. Hardware 탭을 선택합니다.
 
