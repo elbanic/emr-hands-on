@@ -155,7 +155,8 @@ freight_value              DOUBLE
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-LOCATION 's3://euijj-emr-lab-ecommerce-2020/order/';
+LOCATION 's3://euijj-emr-lab-ecommerce-2020/order/'
+tblproperties ("skip.header.line.count"="1");
 
 CREATE EXTERNAL TABLE IF NOT EXISTS product (
 product_id                  STRING,
@@ -170,7 +171,8 @@ product_width_cm            int
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-location 's3://euijj-emr-lab-ecommerce-2020/product/';
+location 's3://euijj-emr-lab-ecommerce-2020/product/'
+tblproperties ("skip.header.line.count"="1");
 
 CREATE EXTERNAL TABLE IF NOT EXISTS order_info (
 order_id                       STRING,
@@ -184,7 +186,8 @@ order_estimated_delivery_date  STRING
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-LOCATION 's3://euijj-emr-lab-ecommerce-2020/order_info/';
+LOCATION 's3://euijj-emr-lab-ecommerce-2020/order_info/'
+tblproperties ("skip.header.line.count"="1");
 ```
 
 2. Product Category별 구매 금액 Sum, Avg을 구하고 저장하는 쿼리를 작성합니다.
