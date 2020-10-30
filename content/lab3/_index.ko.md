@@ -53,7 +53,8 @@ CREATE EXTERNAL TABLE IF NOT EXISTS orders (
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-LOCATION '${INPUT}/order/';
+LOCATION '${INPUT}/order/'
+tblproperties ("skip.header.line.count"="1");
 
 CREATE EXTERNAL TABLE IF NOT EXISTS product (
   product_id                  STRING,
@@ -68,7 +69,8 @@ CREATE EXTERNAL TABLE IF NOT EXISTS product (
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
-LOCATION '${INPUT}/product/';
+LOCATION '${INPUT}/product/'
+tblproperties ("skip.header.line.count"="1");
 
 CREATE TABLE IF NOT EXISTS category_price_sum_avg AS
 SELECT P.product_category_name, SUM(O.price) AS sum_price, AVG(O.price) AS avg_price
