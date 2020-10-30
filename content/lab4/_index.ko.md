@@ -96,7 +96,7 @@ from pyspark.sql.functions import concat, col, lit, monotonically_increasing_id
 data = spark.read.format('com.databricks.spark.csv') \
     .options(header='false', inferschema='true') \
     .option("delimiter", ",") \
-    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/") \
+    .load("s3://euijj-emr-lab-ecommerce-2020/category_price_sum_avg/") \
     .cache()
 
 # 데이터에 잘못된 값이 끼어 있어 제외시킵니다.
@@ -111,7 +111,7 @@ data.repartition(1) \
     .write.mode('overwrite') \
     .option("sep","\t") \
     .option("header","true") \
-    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/org_clustering/")
+    .csv("s3://euijj-emr-lab-ecommerce-2020/org_clustering/")
 ```
 
 아래와 같은 결과물이 출력됩니다.
@@ -143,7 +143,7 @@ data = data.drop('category').drop('sum').drop('avg')
 data.repartition(1) \
     .write.mode('overwrite') \
     .option("sep"," ") \
-    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/input_clustering/")
+    .csv("s3://euijj-emr-lab-ecommerce-2020/input_clustering/")
 ```
 
 4. K-means로 데이터를 클러스터링합니다.
@@ -154,7 +154,7 @@ from pyspark.ml.clustering import KMeans
 from pyspark.ml.evaluation import ClusteringEvaluator
 
 # 앞서 저장한 데이터를 불러옵니다.
-dataset = spark.read.format("libsvm").load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/input_clustering/")
+dataset = spark.read.format("libsvm").load("s3://euijj-emr-lab-ecommerce-2020/input_clustering/")
 
 # Trains a k-means model.
 kmeans = KMeans().setK(5).setSeed(1)
@@ -185,7 +185,7 @@ predictions.drop('features').repartition(1) \
     .write.mode('overwrite') \
     .option("sep","\t") \
     .option("header","true") \
-    .csv("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/output_clustering/")
+    .csv("s3://euijj-emr-lab-ecommerce-2020/output_clustering/")
 ```
 
 # Pandas & Matplotlib
@@ -209,13 +209,13 @@ sudo /usr/bin/pip3 install matplotlib
 org = spark.read.format('com.databricks.spark.csv') \
     .options(header='true', inferschema='true') \
     .option("delimiter", "\t") \
-    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/org_clustering/") \
+    .load("s3://euijj-emr-lab-ecommerce-2020/org_clustering/") \
     .cache()
     
 output = spark.read.format('com.databricks.spark.csv') \
     .options(header='true', inferschema='true') \
     .option("delimiter", "\t") \
-    .load("s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/output_clustering/") \
+    .load("s3://euijj-emr-lab-ecommerce-2020/output_clustering/") \
     .cache()
 ```
 
