@@ -136,7 +136,7 @@ aws s3 cp pyspark-process.py s3://id-sample-code/
 
 1. EMR 메인 페이지로 이동합니다. [link](https://ap-northeast-2.console.aws.amazon.com/elasticmapreduce/home?region=ap-northeast-2)
 
-2. Lab 2에서 생성했던 `EMR-lab-adhoc-20200306`를 선택합니다.
+2. Lab 2에서 생성했던 `EMR-lab-adhoc-2020`를 선택합니다.
 
 3. Steps 탭으로 이동합니다. Add step을 클릭하여 스텝을 추가합니다.
 
@@ -152,8 +152,8 @@ aws s3 cp pyspark-process.py s3://id-sample-code/
     Step type: Hive program
     Name: hive-process
     Script S3 location: s3://id-sample-code/hive-process.q
-    Input S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/
-    Output S3 location: s3://id-emr-lab-data-20200306/brazilian-ecommerce/
+    Input S3 location: s3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/
+    Output S3 location: s3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/
     Action on failure: Continue
     ```
 
@@ -173,7 +173,7 @@ Complete가 되었다면 데이터를 확인하여 결과물이 잘 나왔는지
     Name: pyspark-process
     Deploy mode: Cluster
     Application location: s3://id-sample-code/pyspark-process.py
-    Arguments: s3://id-emr-lab-20200306/2020/08/*/* s3://id-emr-lab-data-20200306/brazilian-ecommerce/apachelog/
+    Arguments: s3://id-emr-labs-2020/2020/08/*/* s3://id-emr-lab-ecommerce-2020/brazilian-ecommerce/apachelog/
     Action on failure: Continue
     ```
 
@@ -210,8 +210,8 @@ aws emr create-cluster \
 --enable-debugging \
 --release-label emr-5.29.0 \
 --log-uri 's3n://aws-logs-xxxx-ap-northeast-2/elasticmapreduce/' \
---steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
---name 'EMR-lab-adhoc-20200306' \
+--steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
+--name 'EMR-lab-adhoc-2020' \
 --instance-groups '[{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"r3.xlarge","Name":"Master - 1"},{"InstanceCount":3,"InstanceGroupType":"CORE","InstanceType":"r3.xlarge","Name":"Core - 2"}]' \
 --scale-down-behavior TERMINATE_AT_TASK_COMPLETION \
 --region ap-northeast-2
@@ -230,8 +230,8 @@ aws emr create-cluster \
 --enable-debugging \
 --release-label emr-5.29.0 \
 --log-uri 's3n://aws-logs-xxxx-ap-northeast-2/elasticmapreduce/' \
---steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
---name 'EMR-lab-adhoc-20200306' \
+--steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
+--name 'EMR-lab-adhoc-2020' \
 --instance-groups '[{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"r3.xlarge","Name":"Master - 1"},{"InstanceCount":3,"InstanceGroupType":"CORE","InstanceType":"r3.xlarge","Name":"Core - 2"}]' \
 --scale-down-behavior TERMINATE_AT_TASK_COMPLETION \
 --region ap-northeast-2 \
@@ -288,8 +288,8 @@ aws emr create-cluster \
 --enable-debugging \
 --release-label emr-5.29.0 \
 --log-uri 's3n://aws-logs-xxxx-ap-northeast-2/elasticmapreduce/' \
---steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q","-d","OUTPUT=s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/category_price_sum_avg/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-data-20200306/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
---name 'EMR-lab-adhoc-20200306' \
+--steps '[{"Args":["hive-script","--run-hive-script","--args","-f","s3://public-access-sample-code/scripts/hive-process.q","-d","OUTPUT=s3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/category_price_sum_avg/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"hive-process"}, {"Args":["spark-submit","--deploy-mode","cluster","s3://public-access-sample-code/scripts/pyspark-process.py","s3://emr-lab-20200224/2020/03/*/*","s3://euijj-emr-lab-ecommerce-2020/brazilian-ecommerce/apachelog/"],"Type":"CUSTOM_JAR","ActionOnFailure":"CONTINUE","Jar":"command-runner.jar","Properties":"","Name":"pyspark-process"}]' \
+--name 'EMR-lab-adhoc-2020' \
 --instance-groups '[{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"r3.xlarge","Name":"Master - 1"},{"InstanceCount":3,"InstanceGroupType":"CORE","InstanceType":"r3.xlarge","Name":"Core - 2"}]' \
 --scale-down-behavior TERMINATE_AT_TASK_COMPLETION \
 --region ap-northeast-2 \
