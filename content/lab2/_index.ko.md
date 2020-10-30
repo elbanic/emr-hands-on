@@ -240,11 +240,11 @@ SELECT * from customer_total_purchase;
 ```python
 import pyspark.sql.functions as f
 
-# 파티션드 데이터 로딩 2020/03/*/* 하면 3월 데이터 모두, 2020/03/02/* 하면 3월 2일 데이터 모두
+# 파티션드 데이터 로딩 2020/10/*/* 하면 10월 데이터 모두, 2020/10/11/* 하면 10월 11일 데이터 모두
 log_raw = spark.read.format('com.databricks.spark.csv') \
   .options(header='false', inferschema='true') \
   .option("delimiter", "\t") \
-  .load("euijj-emr-lab-2020/2020/03/*/*") \
+  .load("euijj-emr-labs-2020/2020/10/*/*") \
   .cache()
 
 splitter = f.split(log_raw['_c0'], ' - - |\"')
