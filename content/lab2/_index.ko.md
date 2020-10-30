@@ -244,7 +244,7 @@ import pyspark.sql.functions as f
 log_raw = spark.read.format('com.databricks.spark.csv') \
   .options(header='false', inferschema='true') \
   .option("delimiter", "\t") \
-  .load("euijj-emr-labs-2020/2020/10/*/*") \
+  .load("s3://euijj-emr-labs-2020/2020/10/*/*") \
   .cache()
 
 splitter = f.split(log_raw['_c0'], ' - - |\"')
