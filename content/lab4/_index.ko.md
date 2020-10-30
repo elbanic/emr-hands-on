@@ -198,6 +198,9 @@ EMR matster에 ssh로 연결하여 아래 명령어를 실행합니다.
 ```sh
 sudo /usr/bin/pip3 install pandas
 sudo /usr/bin/pip3 install matplotlib
+
+# python 3.7에서는 아래 명령어를 사용하여 에러를 수정하세요
+sudo /usr/bin/pip3 install kiwisolver==1.0.1
 ```
 
 1. 아까 작업하던 JupyterHub 노트북으로 되돌아 갑니다.
