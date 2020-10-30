@@ -119,7 +119,7 @@ pre: "<b>1. </b>"
 ---
 
 
-6. Destination을 Amazon S3로 지정합니다. 버킷명은 Create new를 통해 `id-emr-lab-20200306`로 새로 생성합니다.
+6. Destination을 Amazon S3로 지정합니다. 버킷명은 Create new를 통해 `id-emr-lab-2020`로 새로 생성합니다.
 
     ![img](./images/lab1_pic16.png)
 ---
